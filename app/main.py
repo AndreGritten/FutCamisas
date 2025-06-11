@@ -17,17 +17,36 @@ def menu():
             if opcao == "1":
                 nome = input("Nome do produto: ")
                 preco = float(input("Preço do produto: R$ "))
-                tamanho = input("Tamanho do produto: ")
-                adicionar_produto(nome, preco, tamanho)
+                tamanhos_dict = {}
+                while True:
+                    tamanho = input("Informe um tamanho (ou Enter para finalizar): ").upper()
+                    if tamanho == "":
+                        break
+                    quantidade = int(input(f"Quantidade para tamanho {tamanho}: "))
+                    if tamanho in tamanhos_dict:
+                        tamanhos_dict[tamanho] += quantidade
+                    else:
+                        tamanhos_dict[tamanho] = quantidade
+                adicionar_produto(nome, preco, tamanhos_dict)
 
             elif opcao == "2":
                 listar_produtos()
 
-            elif opcao == "3":
+            elif opcao == "3":          
+                listar_produtos()                
                 id_produto = int(input("ID do produto para editar: "))
                 novo_nome = input("Novo nome (pressione Enter para manter o atual): ")
                 novo_preco_input = input("Novo preço (pressione Enter para manter o atual): ")
-                novo_tamanho = input("Novo tamanho (pressione Enter para manter o atual): ")
+                novo_tamanhos_dict = {}
+                while True:
+                    tamanho = input("Informe um tamanho (ou Enter para finalizar): ").upper()
+                    if tamanho == "":
+                        break
+                    quantidade = int(input(f"Quantidade para tamanho {tamanho}: "))
+                    if tamanho in novo_tamanhos_dict:
+                        novo_tamanhos_dict[tamanho] += quantidade
+                    else:
+                        novo_tamanhos_dict[tamanho] = quantidade
             
                 novo_preco = None
                 if novo_preco_input.strip() != "":
@@ -37,7 +56,7 @@ def menu():
                     id_produto, 
                     novo_nome if novo_nome.strip() != "" else None,
                     novo_preco,
-                    novo_tamanho if novo_tamanho.strip() != "" else None
+                    novo_tamanhos_dict if novo_tamanhos_dict else None
                 )   
             
             elif opcao == "4":
