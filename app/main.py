@@ -1,7 +1,7 @@
 # app/main.py
 
-from produtos import adicionar_produto, listar_produtos, editar_produto, excluir_produto
-from usuarios import register_user, login_user, list_users, edit_user, delete_user
+from produtos import *
+from usuarios import *
 
 
 def menu():
