@@ -1,17 +1,15 @@
-# app/main.py
-
 from produtos import *
 from usuarios import *
 
 
 def menu():
     while True:
-        print("\n===== FUTCAMISAS =====")
-        print("1 - Usuários")
-        print("2 - Produtos")
-        print("3 - Vendas")
-        print("4 - estoque")
-        print("0 - Sair")
+        print("""===== FUTCAMISAS =====
+1 - Usuários
+2 - Produtos
+3 - Vendas
+4 - Estoque
+0 - Sair""")
 
         opcao = input("Escolha uma opção: ")
 
@@ -20,9 +18,9 @@ def menu():
         elif opcao == "2":
             menu_produtos()
         elif opcao == "3":
-            pass
+            menu_vendas()
         elif opcao == "4":
-            pass
+            menu_estoque()
         elif opcao == "0":
             print("Programa finalizado com sucesso! ")
             break
@@ -30,18 +28,15 @@ def menu():
             print("Opção inválida, tente novamente! ")
     
             
-
-            
-
 def menu_users():
     while True:
-        print("\n===== MENU DE USUÁRIOS =====")
-        print("1 - Cadastrar usuários")
-        print("2 - Logar usuário")
-        print("3 - Listar usuários")
-        print("4 - Editar usuário")
-        print("5 - Excluir usuário")
-        print("0 - Sair")
+        print("""===== MENU DE USUÁRIOS =====
+1 - Cadastrar usuários
+2 - Logar usuário
+3 - Listar usuários
+4 - Editar usuário
+5 - Excluir usuário
+0 - Sair""")
 
         opcao = input("Escolha uma opção: ")
 
@@ -107,12 +102,12 @@ def menu_users():
 
 def menu_produtos():
     while True:
-        print("\n===== MENU DE PRODUTOS =====")
-        print("1 - Adicionar produto")
-        print("2 - Listar produtos")
-        print("3 - Editar produto")
-        print("4 - Excluir produto")
-        print("0 - Sair")
+        print("""===== MENU DE PRODUTOS =====")
+1 - Adicionar produto")
+2 - Listar produtos")
+3 - Editar produto")
+4 - Excluir produto")
+0 - Sair""")
         
         opcao = input("Escolha uma opção: ")
 
@@ -171,6 +166,14 @@ def menu_produtos():
 
         else:
             print("Opção inválida, tente novamente! ")
+
+
+def menu_vendas():
+    pass
+
+
+def menu_estoque():
+    pass
 
 
 if __name__ == "__main__":
