@@ -1,6 +1,7 @@
 from produtos import *
 from usuarios import *
-
+from vendas import *
+from estoque import * 
 
 def menu():
     while True:
@@ -169,11 +170,54 @@ def menu_produtos():
 
 
 def menu_vendas():
-    pass
+    while True:
+        print("""===== MENU DE VENDAS =====
+1 - Registrar venda 
+2 - Atualizar estoque
+0 - Sair""")
+
+        opcao = input("Escolha uma opção: ")
+        
+        if opcao == "1":
+            register_sale()
+
+        elif opcao == "2":
+            update_stock()
+        
+        elif opcao == "0":
+            print("Saindo...")
+            break
+
+        else:
+            print("Opção inválida, tente novamente! ")
+
 
 
 def menu_estoque():
-    pass
+    while True:
+        print("""===== MENU DO ESTOQUE =====
+1 - Adicionar qtd de um produto ao estoque 
+2 - Consultar qtd em estoque
+0 - Sair""")
+
+        opcao = input("Escolha uma opção: ")
+
+        if opcao == "1":
+            add_product_to_stock()  
+        
+        elif opcao == "2":
+            check_product_in_stock()
+            
+        elif opcao == "0":
+            print("Saindo...")
+            break
+
+        else:
+            print("Opção inválida, tente novamente! ")
+        
+    
+
+
 
 
 if __name__ == "__main__":
