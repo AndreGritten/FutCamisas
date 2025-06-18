@@ -103,11 +103,11 @@ def menu_users():
 
 def menu_produtos():
     while True:
-        print("""===== MENU DE PRODUTOS =====")
-1 - Adicionar produto")
-2 - Listar produtos")
-3 - Editar produto")
-4 - Excluir produto")
+        print("""===== MENU DE PRODUTOS =====
+1 - Adicionar produto
+2 - Listar produtos
+3 - Editar produto
+4 - Excluir produto
 0 - Sair""")
         
         opcao = input("Escolha uma opção: ")
