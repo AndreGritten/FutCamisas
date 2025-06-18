@@ -15,7 +15,7 @@ def adicionar_produto(nome, preco, tamanhos_dict):
     print(f"Produto '{nome}' salvo no banco com sucesso!")
 
 def listar_produtos():
-    sql = "SELECT id, nome, preco, tamanhos FROM produtos WHERE nome = 'Camisa Corinthians 2024'"
+    sql = "SELECT id, nome, preco, tamanhos FROM produtos"
     resultados = consultar(sql)
     
     if not resultados:
@@ -85,3 +85,46 @@ def excluir_produto(id):
     executar_comando(sql, (id,))
     print(f"Produto com ID {id} excluído com sucesso!")
 
+
+def adicionar_quantidade_produto():
+    listar_produtos()
+    try:
+        id_produto = int(input("Informe o ID do produto para adicionar quantidade: "))
+    except ValueError:
+        print("ID inválido.")
+        return
+    
+    sql_buscar = "SELECT tamanhos FROM produtos WHERE id = ?"
+    resultado = consultar(sql_buscar, (id_produto,))
+
+    if not resultado:
+        print(f"Produto com ID {id_produto} não encontrado.")
+        return
+
+    tamanhos_json = resultado[0][0]
+    tamanhos_dict = json.loads(tamanhos_json)
+
+    tamanho = input("Informe o tamanho que deseja adicionar (ex.: P, M, G): ").upper()
+    try:
+        quantidade_adicional = int(input(f"Quantidade que deseja adicionar no tamanho {tamanho}: "))
+    except ValueError:
+        print("Quantidade inválida.")
+        return
+
+    if tamanho in tamanhos_dict:
+        tamanhos_dict[tamanho] += quantidade_adicional
+    else:
+        tamanhos_dict[tamanho] = quantidade_adicional
+
+    tamanhos_json_novo = json.dumps(tamanhos_dict)
+
+    sql_update = '''
+        UPDATE produtos
+        SET tamanhos = ?
+        WHERE id = ?
+    '''
+    parametros = (tamanhos_json_novo, id_produto)
+
+    executar_comando(sql_update, parametros)
+
+    print(f"Quantidade adicionada com sucesso no produto ID {id_produto}, tamanho {tamanho}.")

@@ -1,7 +1,7 @@
 import sqlite3
 import os
 
-CAMINHO_BANCO = os.path.join(os.path.dirname(__file__), 'produtos.db')
+CAMINHO_BANCO = os.path.join(os.path.dirname(__file__), 'futCamisas.db')
 
 def conectar():
     return sqlite3.connect(CAMINHO_BANCO)

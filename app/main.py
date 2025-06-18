@@ -8,7 +8,7 @@ def menu():
     while True:
         print("\n===== FUTCAMISAS =====")
         print("1 - Usuários")
-        print("2 - Produtos")
+        print("2 - Estoque")
         print("0 - Sair")
 
         opcao = input("Escolha uma opção: ")
@@ -16,7 +16,7 @@ def menu():
         if opcao == "1":
             menu_users()
         elif opcao == "2":
-            menu_produtos()
+            menu_estoque()
         elif opcao == "0":
             print("Programa finalizado com sucesso! ")
             break
@@ -99,13 +99,14 @@ def menu_users():
             print("Opção inválida, tente novamente! ")
     
 
-def menu_produtos():
+def menu_estoque():
     while True:
-        print("\n===== MENU DE PRODUTOS =====")
+        print("\n===== MENU DE ESTOQUE =====")
         print("1 - Adicionar produto")
         print("2 - Listar produtos")
         print("3 - Editar produto")
         print("4 - Excluir produto")
+        print("5 - Adicionar quantidade ao produto")
         print("0 - Sair")
         
         opcao = input("Escolha uma opção: ")
@@ -158,6 +159,9 @@ def menu_produtos():
         elif opcao == "4":
             id_produto = int(input("ID do produto para excluir: "))
             excluir_produto(id_produto)
+
+        elif opcao == "5":
+            adicionar_quantidade_produto()
 
         elif opcao == "0":
             print("Saindo...")
