@@ -9,6 +9,8 @@ def menu():
         print("\n===== FUTCAMISAS =====")
         print("1 - Usuários")
         print("2 - Produtos")
+        print("3 - Vendas")
+        print("4 - estoque")
         print("0 - Sair")
 
         opcao = input("Escolha uma opção: ")
@@ -17,6 +19,10 @@ def menu():
             menu_users()
         elif opcao == "2":
             menu_produtos()
+        elif opcao == "3":
+            pass
+        elif opcao == "4":
+            pass
         elif opcao == "0":
             print("Programa finalizado com sucesso! ")
             break
