@@ -9,6 +9,7 @@ def menu():
 1 - Usuários
 2 - Estoque
 3 - Vendas
+4 - Produtos
 0 - Sair""")
 
         opcao = input("Escolha uma opção: ")
@@ -131,13 +132,15 @@ def menu_users():
             print("Opção inválida, tente novamente!")
 
 
-def menu_estoque():
+def menu_produtos():
     while True:
         print("""\n===== MENU DE PRODUTOS =====
 1 - Adicionar produto
 2 - Listar produtos
 3 - Editar produto
 4 - Excluir produto
+5 - Filtrar por nome
+6 - Filtrar por preço
 0 - Sair""")
         
         opcao = input("Escolha uma opção: ")
@@ -145,6 +148,7 @@ def menu_estoque():
         if opcao == "1":
             nome = input("Nome do produto: ")
             preco = float(input("Preço do produto: R$ "))
+
             tamanhos_dict = {}
             while True:
                 tamanho = input("Informe um tamanho (ou Enter para finalizar): ").upper()
@@ -155,6 +159,7 @@ def menu_estoque():
                     tamanhos_dict[tamanho] += quantidade
                 else:
                     tamanhos_dict[tamanho] = quantidade
+
             adicionar_produto(nome, preco, tamanhos_dict)
 
         elif opcao == "2":
@@ -218,11 +223,25 @@ def menu_estoque():
 
         
         elif opcao == "4":
-            id_produto = int(input("ID do produto para excluir: "))
+            try:
+                id_produto = int(input("ID do produto para excluir: "))
+            except ValueError:
+                print("ID inválido.")
+                continue
+
             excluir_produto(id_produto)
 
         elif opcao == "5":
-            adicionar_quantidade_produto()
+            nome = input("Digite o nome do time ou parte do nome para buscar: ")
+            filtrar_produtos_por_nome(nome)
+
+        elif opcao == "6":
+            try:
+                preco_min = float(input("Digite o preço mínimo: R$ "))
+                preco_max = float(input("Digite o preço máximo: R$ "))
+                filtrar_produtos_por_preco(preco_min, preco_max)
+            except ValueError:
+                print("Preço inválido.")
 
         elif opcao == "0":
             print("Saindo...")
@@ -236,6 +255,7 @@ def menu_vendas():
         print("""\n===== MENU DE VENDAS =====
 1 - Registrar venda 
 2 - Atualizar estoque
+3 - Listar vendas
 0 - Sair""")
 
         opcao = input("Escolha uma opção: ")
@@ -253,17 +273,17 @@ def menu_vendas():
         else:
             print("Opção inválida, tente novamente! ")
 
-def menu_produtos():
+def menu_estoque():
     while True:
         print("""===== MENU DO ESTOQUE =====
-1 - Adicionar qtd de um produto ao estoque 
-2 - Consultar qtd em estoque
+1 - Adicionar quantidade em estoque 
+2 - Consultar quantidade em estoque
 0 - Sair""")
 
         opcao = input("Escolha uma opção: ")
 
         if opcao == "1":
-            add_product_to_stock()  
+            adicionar_quantidade_produto() 
         
         elif opcao == "2":
             check_product_in_stock()

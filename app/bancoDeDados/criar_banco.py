@@ -14,7 +14,7 @@ def criar_banco():
             preco REAL NOT NULL,
             tamanhos TEXT NOT NULL
         );
-                   
+
         CREATE TABLE IF NOT EXISTS estoque (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             produto_id INTEGER NOT NULL,
@@ -22,7 +22,7 @@ def criar_banco():
             quantidade INTEGER NOT NULL,
             FOREIGN KEY (produto_id) REFERENCES produtos(id)
         );
-                   
+
         CREATE TABLE IF NOT EXISTS usuarios (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             nome TEXT NOT NULL,
@@ -31,7 +31,7 @@ def criar_banco():
             senha TEXT NOT NULL,
             tipo TEXT NOT NULL CHECK (tipo IN ('cliente', 'funcionario'))
         );
-        
+
         CREATE TABLE IF NOT EXISTS vendas (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             usuario_id INTEGER NOT NULL,
@@ -40,7 +40,7 @@ def criar_banco():
             total REAL NOT NULL,
             FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
         );
-                   
+
         CREATE TABLE IF NOT EXISTS itens_venda (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             venda_id INTEGER NOT NULL,
@@ -53,11 +53,11 @@ def criar_banco():
         );
     ''')
 
+    # Verificar se produtos já existem
     cursor.execute('SELECT COUNT(*) FROM produtos')
     quantidade = cursor.fetchone()[0]
 
     if quantidade == 0:
-        # Dados das camisas
         camisas = [
             {"nome": "Camisa Flamengo 2024", "preco": 249.90, "tamanhos": {"P": 10, "M": 15, "G": 20, "GG": 5}},
             {"nome": "Camisa Palmeiras 2024", "preco": 259.90, "tamanhos": {"P": 8, "M": 12, "G": 18, "GG": 7}},
@@ -72,17 +72,27 @@ def criar_banco():
         ]
 
         for camisa in camisas:
-            tamanhos_json = json.dumps(camisa["tamanhos"])
+            tamanhos = list(camisa["tamanhos"].keys())
+            tamanhos_json = json.dumps(tamanhos)
+
             cursor.execute('''
                 INSERT INTO produtos (nome, preco, tamanhos)
                 VALUES (?, ?, ?)
             ''', (camisa["nome"], camisa["preco"], tamanhos_json))
 
-        print("Produtos inseridos com sucesso!")
-    else:
-        print("Tabela já possui produtos cadastrados.")
+            produto_id = cursor.lastrowid
 
-    # Inserir usuários se a tabela estiver vazia
+            for tamanho, quantidade in camisa["tamanhos"].items():
+                cursor.execute('''
+                    INSERT INTO estoque (produto_id, tamanho, quantidade)
+                    VALUES (?, ?, ?)
+                ''', (produto_id, tamanho, quantidade))
+
+        print("Produtos e estoques inseridos com sucesso!")
+    else:
+        print("Tabela de produtos já possui dados cadastrados.")
+
+    # Inserir usuários se não existirem
     cursor.execute('SELECT COUNT(*) FROM usuarios')
     quantidade_usuarios = cursor.fetchone()[0]
 
@@ -108,11 +118,12 @@ def criar_banco():
 
         print("Usuários inseridos com sucesso!")
     else:
-        print("Tabela já possui usuários cadastrados.")
+        print("Tabela de usuários já possui dados cadastrados.")
 
     conexao.commit()
     conexao.close()
-    print(f"Banco de dados e tabela criados com sucesso em {caminho_banco}!")
+    print(f"Banco de dados e tabelas criados com sucesso em {caminho_banco}!")
+
 
 if __name__ == "__main__":
     criar_banco()

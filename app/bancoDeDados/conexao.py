@@ -13,6 +13,13 @@ def executar_comando(sql, parametros=()):
     conexao.commit()
     conexao.close()
 
+def executar_comando_com_retorno(sql, parametros=()):
+    conexao = conectar()
+    cursor = conexao.cursor()
+    cursor.execute(sql, parametros)
+    conexao.commit()
+    return cursor, conexao
+
 def consultar(sql, parametros=()):
     conexao = conectar()
     cursor = conexao.cursor()

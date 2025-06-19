@@ -3,16 +3,32 @@ from bancoDeDados.conexao import *
 import json
 
 def adicionar_produto(nome, preco, tamanhos_dict):
+    # Converter os tamanhos para JSON para armazenar no campo da tabela produtos
+    tamanhos_json = json.dumps(list(tamanhos_dict.keys()))
 
-    tamanhos_json = json.dumps(tamanhos_dict)
-
-    sql = '''
+    # Inserir na tabela produtos
+    sql_produto = '''
         INSERT INTO produtos (nome, preco, tamanhos)
         VALUES (?, ?, ?)
     '''
-    parametros = (nome, preco, tamanhos_json)
-    executar_comando(sql, parametros)
-    print(f"Produto '{nome}' salvo no banco com sucesso!")
+    cursor, conexao = executar_comando_com_retorno(sql_produto, (nome, preco, tamanhos_json))
+
+    # Pega o ID do produto recém-cadastrado
+    produto_id = cursor.lastrowid
+
+    # Inserir os tamanhos e quantidades na tabela estoque
+    for tamanho, quantidade in tamanhos_dict.items():
+        sql_estoque = '''
+            INSERT INTO estoque (produto_id, tamanho, quantidade)
+            VALUES (?, ?, ?)
+        '''
+        cursor.execute(sql_estoque, (produto_id, tamanho, quantidade))
+
+    conexao.commit()
+    conexao.close()
+
+    print(f"Produto '{nome}' salvo com sucesso com ID {produto_id} e estoque registrado.")
+
 
 def listar_produtos():
     sql = "SELECT id, nome, preco, tamanhos FROM produtos"
@@ -26,21 +42,29 @@ def listar_produtos():
     
     for linha in resultados:
         id_produto, nome, preco, tamanhos_json = linha
-        tamanhos_dict = json.loads(tamanhos_json)
-        
-        print(f"[ID:{id_produto}] {nome} - R$ {preco}")
-        
-        # Primeiro imprime na ordem padrão (P, M, G, GG)
-        for tamanho in ordem_tamanhos:
-            if tamanho in tamanhos_dict:
-                print(f"Tam: {tamanho} ({tamanhos_dict[tamanho]} un)")
+        tamanhos_list = json.loads(tamanhos_json)
 
-        # Depois imprime tamanhos extras fora da ordem padrão, se houver
-        tamanhos_extras = set(tamanhos_dict.keys()) - set(ordem_tamanhos)
+        print(f"[ID:{id_produto}] {nome} - R$ {preco}")
+
+        # Buscar os estoques deste produto
+        sql_estoque = "SELECT tamanho, quantidade FROM estoque WHERE produto_id = ?"
+        estoque = consultar(sql_estoque, (id_produto,))
+        estoque_dict = {tamanho: quantidade for tamanho, quantidade in estoque}
+
+        # Primeiro imprime tamanhos na ordem padrão (P, M, G, GG)
+        for tamanho in ordem_tamanhos:
+            if tamanho in tamanhos_list:
+                quantidade = estoque_dict.get(tamanho, 0)
+                print(f"Tam: {tamanho} ({quantidade} un)")
+
+        # Depois tamanhos extras (se houver)
+        tamanhos_extras = set(tamanhos_list) - set(ordem_tamanhos)
         for tamanho in sorted(tamanhos_extras):
-            print(f"Tam: {tamanho} ({tamanhos_dict[tamanho]} un)")
+            quantidade = estoque_dict.get(tamanho, 0)
+            print(f"Tam: {tamanho} ({quantidade} un)")
 
         print('----------------------')
+
 
 
 def editar_produto(id, novo_nome=None, novo_preco=None, novos_tamanhos=None):
@@ -55,15 +79,13 @@ def editar_produto(id, novo_nome=None, novo_preco=None, novos_tamanhos=None):
     nome_atual, preco_atual, tamanhos_atual_json = resultado[0]
     tamanhos_atual = json.loads(tamanhos_atual_json)
 
-    # Se novos tamanhos foram passados, somar aos existentes
+    # Atualiza lista de tamanhos se novos tamanhos forem informados
     if novos_tamanhos:
-        for tamanho, quantidade in novos_tamanhos.items():
-            if tamanho in tamanhos_atual:
-                tamanhos_atual[tamanho] += quantidade
-            else:
-                tamanhos_atual[tamanho] = quantidade
+        for tamanho in novos_tamanhos.keys():
+            if tamanho not in tamanhos_atual:
+                tamanhos_atual.append(tamanho)
 
-    # Construir os campos para atualizar
+    # Atualizar a tabela produtos
     campos = []
     parametros = []
 
@@ -78,20 +100,44 @@ def editar_produto(id, novo_nome=None, novo_preco=None, novos_tamanhos=None):
         campos.append("tamanhos = ?")
         parametros.append(tamanhos_json)
 
-    if not campos:
-        print("Nenhuma informação para atualizar.")
-        return
+    if campos:
+        sql = f'''
+            UPDATE produtos
+            SET {', '.join(campos)}
+            WHERE id = ?
+        '''
+        parametros.append(id)
+        executar_comando(sql, tuple(parametros))
 
-    parametros.append(id)  # ID no WHERE
+    # Atualizar a tabela estoque (substitui a quantidade)
+    if novos_tamanhos:
+        for tamanho, quantidade in novos_tamanhos.items():
+            # Verificar se o tamanho já existe no estoque
+            sql_check = '''
+                SELECT id FROM estoque
+                WHERE produto_id = ? AND tamanho = ?
+            '''
+            existe = consultar(sql_check, (id, tamanho))
 
-    sql = f'''
-        UPDATE produtos
-        SET {', '.join(campos)}
-        WHERE id = ?
-    '''
+            if existe:
+                # Atualiza a quantidade
+                sql_update = '''
+                    UPDATE estoque
+                    SET quantidade = ?
+                    WHERE produto_id = ? AND tamanho = ?
+                '''
+                executar_comando(sql_update, (quantidade, id, tamanho))
+            else:
+                # Insere novo tamanho
+                sql_insert = '''
+                    INSERT INTO estoque (produto_id, tamanho, quantidade)
+                    VALUES (?, ?, ?)
+                '''
+                executar_comando(sql_insert, (id, tamanho, quantidade))
 
-    executar_comando(sql, tuple(parametros))
     print(f"Produto com ID {id} atualizado com sucesso!")
+
+
 
 
 
@@ -104,51 +150,58 @@ def excluir_produto(id):
         print(f"Produto com ID {id} não encontrado.")
         return
 
-    # Executar exclusão
-    sql = "DELETE FROM produtos WHERE id = ?"
-    executar_comando(sql, (id,))
-    print(f"Produto com ID {id} excluído com sucesso!")
+    # Excluir do estoque
+    executar_comando("DELETE FROM estoque WHERE produto_id = ?", (id,))
+    # Excluir do produtos
+    executar_comando("DELETE FROM produtos WHERE id = ?", (id,))
 
+    print(f"Produto com ID {id} e seu estoque foram excluídos com sucesso!")
 
-def adicionar_quantidade_produto():
-    listar_produtos()
-    try:
-        id_produto = int(input("Informe o ID do produto para adicionar quantidade: "))
-    except ValueError:
-        print("ID inválido.")
-        return
+def filtrar_produtos_por_nome(nome_busca):
+    sql = "SELECT id, nome, preco, tamanhos FROM produtos WHERE nome LIKE ?"
+    parametro = f"%{nome_busca}%"
+    resultados = consultar(sql, (parametro,))
     
-    sql_buscar = "SELECT tamanhos FROM produtos WHERE id = ?"
-    resultado = consultar(sql_buscar, (id_produto,))
-
-    if not resultado:
-        print(f"Produto com ID {id_produto} não encontrado.")
+    if not resultados:
+        print(f"Nenhum produto encontrado com '{nome_busca}'.")
         return
 
-    tamanhos_json = resultado[0][0]
-    tamanhos_dict = json.loads(tamanhos_json)
+    print(f"\nProdutos que contêm '{nome_busca}':")
+    for id_produto, nome, preco, tamanhos_json in resultados:
+        tamanhos_list = json.loads(tamanhos_json)
+        
+        print(f"[ID:{id_produto}] {nome} - R$ {preco}")
 
-    tamanho = input("Informe o tamanho que deseja adicionar (ex.: P, M, G): ").upper()
-    try:
-        quantidade_adicional = int(input(f"Quantidade que deseja adicionar no tamanho {tamanho}: "))
-    except ValueError:
-        print("Quantidade inválida.")
+        sql_estoque = "SELECT tamanho, quantidade FROM estoque WHERE produto_id = ?"
+        estoque = consultar(sql_estoque, (id_produto,))
+        estoque_dict = {tamanho: quantidade for tamanho, quantidade in estoque}
+
+        for tamanho in tamanhos_list:
+            quantidade = estoque_dict.get(tamanho, 0)
+            print(f"Tam: {tamanho} ({quantidade} un)")
+
+        print('----------------------')
+
+def filtrar_produtos_por_preco(preco_min, preco_max):
+    sql = "SELECT id, nome, preco, tamanhos FROM produtos WHERE preco BETWEEN ? AND ?"
+    resultados = consultar(sql, (preco_min, preco_max))
+    
+    if not resultados:
+        print(f"Nenhum produto encontrado na faixa de preço de R$ {preco_min} até R$ {preco_max}.")
         return
 
-    if tamanho in tamanhos_dict:
-        tamanhos_dict[tamanho] += quantidade_adicional
-    else:
-        tamanhos_dict[tamanho] = quantidade_adicional
+    print(f"\nProdutos com preço entre R$ {preco_min} e R$ {preco_max}:")
+    for id_produto, nome, preco, tamanhos_json in resultados:
+        tamanhos_list = json.loads(tamanhos_json)
+        
+        print(f"[ID:{id_produto}] {nome} - R$ {preco}")
 
-    tamanhos_json_novo = json.dumps(tamanhos_dict)
+        sql_estoque = "SELECT tamanho, quantidade FROM estoque WHERE produto_id = ?"
+        estoque = consultar(sql_estoque, (id_produto,))
+        estoque_dict = {tamanho: quantidade for tamanho, quantidade in estoque}
 
-    sql_update = '''
-        UPDATE produtos
-        SET tamanhos = ?
-        WHERE id = ?
-    '''
-    parametros = (tamanhos_json_novo, id_produto)
+        for tamanho in tamanhos_list:
+            quantidade = estoque_dict.get(tamanho, 0)
+            print(f"Tam: {tamanho} ({quantidade} un)")
 
-    executar_comando(sql_update, parametros)
-
-    print(f"Quantidade adicionada com sucesso no produto ID {id_produto}, tamanho {tamanho}.")
+        print('----------------------')
