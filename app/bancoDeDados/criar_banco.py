@@ -18,7 +18,7 @@ def criar_banco():
         CREATE TABLE IF NOT EXISTS estoque (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             produto_id INTEGER NOT NULL,
-            tamanho TEXT NOT NULL, -- Ex.: P, M, G
+            tamanho TEXT NOT NULL,
             quantidade INTEGER NOT NULL,
             FOREIGN KEY (produto_id) REFERENCES produtos(id)
         );
@@ -51,8 +51,6 @@ def criar_banco():
             FOREIGN KEY (venda_id) REFERENCES vendas(id),
             FOREIGN KEY (produto_id) REFERENCES produtos(id)
         );
-
-
     ''')
 
     cursor.execute('SELECT COUNT(*) FROM produtos')
@@ -83,6 +81,34 @@ def criar_banco():
         print("Produtos inseridos com sucesso!")
     else:
         print("Tabela já possui produtos cadastrados.")
+
+    # Inserir usuários se a tabela estiver vazia
+    cursor.execute('SELECT COUNT(*) FROM usuarios')
+    quantidade_usuarios = cursor.fetchone()[0]
+
+    if quantidade_usuarios == 0:
+        usuarios = [
+            {"nome": "João Silva", "cpf": "12345678901", "email": "joao.silva@email.com", "senha": "senha123", "tipo": "cliente"},
+            {"nome": "Maria Oliveira", "cpf": "23456789012", "email": "maria.oliveira@email.com", "senha": "senha456", "tipo": "cliente"},
+            {"nome": "Carlos Pereira", "cpf": "34567890123", "email": "carlos.pereira@email.com", "senha": "senha789", "tipo": "funcionario"},
+            {"nome": "Ana Souza", "cpf": "45678901234", "email": "ana.souza@email.com", "senha": "senha321", "tipo": "cliente"},
+            {"nome": "Pedro Santos", "cpf": "56789012345", "email": "pedro.santos@email.com", "senha": "senha654", "tipo": "funcionario"},
+            {"nome": "Luciana Costa", "cpf": "67890123456", "email": "luciana.costa@email.com", "senha": "senha987", "tipo": "cliente"},
+            {"nome": "Felipe Rocha", "cpf": "78901234567", "email": "felipe.rocha@email.com", "senha": "senha111", "tipo": "funcionario"},
+            {"nome": "Patrícia Lima", "cpf": "89012345678", "email": "patricia.lima@email.com", "senha": "senha222", "tipo": "cliente"},
+            {"nome": "Ricardo Almeida", "cpf": "90123456789", "email": "ricardo.almeida@email.com", "senha": "senha333", "tipo": "funcionario"},
+            {"nome": "Sandra Martins", "cpf": "01234567890", "email": "sandra.martins@email.com", "senha": "senha444", "tipo": "cliente"}
+        ]
+
+        for user in usuarios:
+            cursor.execute('''
+                INSERT INTO usuarios (nome, cpf, email, senha, tipo)
+                VALUES (?, ?, ?, ?, ?)
+            ''', (user["nome"], user["cpf"], user["email"], user["senha"], user["tipo"]))
+
+        print("Usuários inseridos com sucesso!")
+    else:
+        print("Tabela já possui usuários cadastrados.")
 
     conexao.commit()
     conexao.close()

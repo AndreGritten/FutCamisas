@@ -22,25 +22,48 @@ def listar_produtos():
         print("Nenhum produto cadastrado.")
         return
     
+    ordem_tamanhos = ["P", "M", "G", "GG"]  # Ordem desejada
+    
     for linha in resultados:
         id_produto, nome, preco, tamanhos_json = linha
         tamanhos_dict = json.loads(tamanhos_json)
+        
         print(f"[ID:{id_produto}] {nome} - R$ {preco}")
-        for tamanho, qtd in tamanhos_dict.items():
-            print(f"Tam: {tamanho} ({qtd} un)")
+        
+        # Primeiro imprime na ordem padrão (P, M, G, GG)
+        for tamanho in ordem_tamanhos:
+            if tamanho in tamanhos_dict:
+                print(f"Tam: {tamanho} ({tamanhos_dict[tamanho]} un)")
+
+        # Depois imprime tamanhos extras fora da ordem padrão, se houver
+        tamanhos_extras = set(tamanhos_dict.keys()) - set(ordem_tamanhos)
+        for tamanho in sorted(tamanhos_extras):
+            print(f"Tam: {tamanho} ({tamanhos_dict[tamanho]} un)")
+
         print('----------------------')
+
 
 def editar_produto(id, novo_nome=None, novo_preco=None, novos_tamanhos=None):
     # Verificar se o produto existe
-    sql_verificar = "SELECT * FROM produtos WHERE id = ?"
+    sql_verificar = "SELECT nome, preco, tamanhos FROM produtos WHERE id = ?"
     resultado = consultar(sql_verificar, (id,))
-    
 
     if not resultado:
         print(f"Produto com ID {id} não encontrado.")
         return
 
-    # Construir os campos que serão atualizados
+    nome_atual, preco_atual, tamanhos_atual_json = resultado[0]
+    tamanhos_atual = json.loads(tamanhos_atual_json)
+
+    # Se novos tamanhos foram passados, somar aos existentes
+    if novos_tamanhos:
+        for tamanho, quantidade in novos_tamanhos.items():
+            if tamanho in tamanhos_atual:
+                tamanhos_atual[tamanho] += quantidade
+            else:
+                tamanhos_atual[tamanho] = quantidade
+
+    # Construir os campos para atualizar
     campos = []
     parametros = []
 
@@ -51,7 +74,7 @@ def editar_produto(id, novo_nome=None, novo_preco=None, novos_tamanhos=None):
         campos.append("preco = ?")
         parametros.append(novo_preco)
     if novos_tamanhos:
-        tamanhos_json = json.dumps(novos_tamanhos)
+        tamanhos_json = json.dumps(tamanhos_atual)
         campos.append("tamanhos = ?")
         parametros.append(tamanhos_json)
 
@@ -59,7 +82,7 @@ def editar_produto(id, novo_nome=None, novo_preco=None, novos_tamanhos=None):
         print("Nenhuma informação para atualizar.")
         return
 
-    parametros.append(id)  # ID para o WHERE
+    parametros.append(id)  # ID no WHERE
 
     sql = f'''
         UPDATE produtos
@@ -69,6 +92,7 @@ def editar_produto(id, novo_nome=None, novo_preco=None, novos_tamanhos=None):
 
     executar_comando(sql, tuple(parametros))
     print(f"Produto com ID {id} atualizado com sucesso!")
+
 
 
 def excluir_produto(id):
