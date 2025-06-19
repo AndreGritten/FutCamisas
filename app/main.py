@@ -21,10 +21,6 @@ def menu():
             menu_vendas()
         elif opcao == "4":
             menu_produtos()
-        elif opcao == "3":
-            menu_vendas()
-        elif opcao == "4":
-            menu_estoque()
         elif opcao == "0":
             print("Programa finalizado com sucesso! ")
             break
@@ -257,7 +253,7 @@ def menu_vendas():
         else:
             print("Opção inválida, tente novamente! ")
 
-def menu_produto():
+def menu_produtos():
     while True:
         print("""===== MENU DO ESTOQUE =====
 1 - Adicionar qtd de um produto ao estoque 
