@@ -1,5 +1,3 @@
-# app/main.py
-
 from produtos import *
 from usuarios import *
 from vendas import *
@@ -7,12 +5,10 @@ from estoque import *
 
 def menu():
     while True:
-        print("""===== FUTCAMISAS =====
-1 - Usuários
-2 - Estoque
-3 - Vendas
-4 - Produtos
-0 - Sair""")
+        print("\n===== FUTCAMISAS =====")
+        print("1 - Usuários")
+        print("2 - Produtos")
+        print("0 - Sair")
 
         opcao = input("Escolha uma opção: ")
 
@@ -24,6 +20,10 @@ def menu():
             menu_vendas()
         elif opcao == "4":
             menu_produtos()
+        elif opcao == "3":
+            menu_vendas()
+        elif opcao == "4":
+            menu_estoque()
         elif opcao == "0":
             print("Programa finalizado com sucesso! ")
             break
@@ -31,9 +31,6 @@ def menu():
             print("Opção inválida, tente novamente! ")
     
             
-
-            
-
 def menu_users():
     while True:
         print("""===== MENU DE USUÁRIOS =====
@@ -139,13 +136,12 @@ def menu_users():
 
 def menu_estoque():
     while True:
-        print("""===== MENU DE PRODUTOS =====
-1 - Adicionar produto
-2 - Listar produtos
-3 - Editar produto
-4 - Excluir produto
-5 - Adicionar quantidade de produto
-0 - Sair""")
+        print("\n===== MENU DE PRODUTOS =====")
+        print("1 - Adicionar produto")
+        print("2 - Listar produtos")
+        print("3 - Editar produto")
+        print("4 - Excluir produto")
+        print("0 - Sair")
         
         opcao = input("Escolha uma opção: ")
 
@@ -259,6 +255,57 @@ def menu_vendas():
 
         else:
             print("Opção inválida, tente novamente! ")
+
+
+def menu_vendas():
+    while True:
+        print("""===== MENU DE VENDAS =====
+1 - Registrar venda 
+2 - Atualizar estoque
+0 - Sair""")
+
+        opcao = input("Escolha uma opção: ")
+        
+        if opcao == "1":
+            register_sale()
+
+        elif opcao == "2":
+            update_stock()
+        
+        elif opcao == "0":
+            print("Saindo...")
+            break
+
+        else:
+            print("Opção inválida, tente novamente! ")
+
+
+
+def menu_estoque():
+    while True:
+        print("""===== MENU DO ESTOQUE =====
+1 - Adicionar qtd de um produto ao estoque 
+2 - Consultar qtd em estoque
+0 - Sair""")
+
+        opcao = input("Escolha uma opção: ")
+
+        if opcao == "1":
+            add_product_to_stock()  
+        
+        elif opcao == "2":
+            check_product_in_stock()
+            
+        elif opcao == "0":
+            print("Saindo...")
+            break
+
+        else:
+            print("Opção inválida, tente novamente! ")
+        
+    
+
+
 
 
 if __name__ == "__main__":
