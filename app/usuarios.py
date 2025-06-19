@@ -1,7 +1,6 @@
 from bancoDeDados.conexao import *
 import sqlite3
 
-
 def register_user(nome, cpf, email, senha, tipo):
     try:
         sql = '''

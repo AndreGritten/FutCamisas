@@ -5,7 +5,7 @@ from estoque import *
 
 def menu():
     while True:
-        print("""===== FUTCAMISAS =====
+        print("""\n===== FUTCAMISAS =====
 1 - Usuários
 2 - Estoque
 3 - Vendas
@@ -30,7 +30,7 @@ def menu():
             
 def menu_users():
     while True:
-        print("""===== MENU DE USUÁRIOS =====
+        print("""\n===== MENU DE USUÁRIOS =====
 1 - Cadastrar usuários
 2 - Logar usuário
 3 - Listar usuários
@@ -133,12 +133,12 @@ def menu_users():
 
 def menu_estoque():
     while True:
-        print("\n===== MENU DE PRODUTOS =====")
-        print("1 - Adicionar produto")
-        print("2 - Listar produtos")
-        print("3 - Editar produto")
-        print("4 - Excluir produto")
-        print("0 - Sair")
+        print("""\n===== MENU DE PRODUTOS =====
+1 - Adicionar produto
+2 - Listar produtos
+3 - Editar produto
+4 - Excluir produto
+0 - Sair""")
         
         opcao = input("Escolha uma opção: ")
 
@@ -233,7 +233,7 @@ def menu_estoque():
 
 def menu_vendas():
     while True:
-        print("""===== MENU DE VENDAS =====
+        print("""\n===== MENU DE VENDAS =====
 1 - Registrar venda 
 2 - Atualizar estoque
 0 - Sair""")
