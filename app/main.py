@@ -5,10 +5,11 @@ from estoque import *
 
 def menu():
     while True:
-        print("\n===== FUTCAMISAS =====")
-        print("1 - Usuários")
-        print("2 - Produtos")
-        print("0 - Sair")
+        print("""===== FUTCAMISAS =====
+1 - Usuários
+2 - Estoque
+3 - Vendas
+0 - Sair""")
 
         opcao = input("Escolha uma opção: ")
 
@@ -256,32 +257,7 @@ def menu_vendas():
         else:
             print("Opção inválida, tente novamente! ")
 
-
-def menu_vendas():
-    while True:
-        print("""===== MENU DE VENDAS =====
-1 - Registrar venda 
-2 - Atualizar estoque
-0 - Sair""")
-
-        opcao = input("Escolha uma opção: ")
-        
-        if opcao == "1":
-            register_sale()
-
-        elif opcao == "2":
-            update_stock()
-        
-        elif opcao == "0":
-            print("Saindo...")
-            break
-
-        else:
-            print("Opção inválida, tente novamente! ")
-
-
-
-def menu_estoque():
+def menu_produto():
     while True:
         print("""===== MENU DO ESTOQUE =====
 1 - Adicionar qtd de um produto ao estoque 
