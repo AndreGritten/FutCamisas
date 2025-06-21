@@ -253,18 +253,32 @@ def menu_produtos():
 def menu_vendas():
     while True:
         print("""\n===== MENU DE VENDAS =====
-1 - Registrar venda 
-2 - Atualizar estoque
-3 - Listar vendas
+1 - Realizar compra
+2 - Listar vendas
+3 - Listar compras do usuário
 0 - Sair""")
 
         opcao = input("Escolha uma opção: ")
         
         if opcao == "1":
-            register_sale()
+            realizar_venda()
 
         elif opcao == "2":
-            update_stock()
+            listar_vendas()
+
+        elif opcao == "3":
+            email = input("Digite seu email: ").strip()
+            senha = input("Digite sua senha: ").strip()
+
+            sql = "SELECT id, nome FROM usuarios WHERE email = ? AND senha = ?"
+            resultado = consultar(sql, (email, senha))
+
+            if not resultado:
+                print("Login inválido. Verifique email e senha.")
+            else:
+                usuario_id, nome = resultado[0]
+                print(f"\nBem-vindo(a), {nome}!")
+                buscar_historico_vendas(usuario_id)
         
         elif opcao == "0":
             print("Saindo...")
