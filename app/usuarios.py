@@ -1,76 +1,65 @@
 from bancoDeDados.conexao import *
 import sqlite3
 
-def register_user(nome, cpf, email, senha, tipo):
+# --- Funções de lógica (somente banco e regras) ---
+
+def registrar_usuario(nome, cpf, email, senha, tipo):
     try:
         sql = '''
             INSERT INTO usuarios (nome, cpf, email, senha, tipo)
             VALUES (?, ?, ?, ?, ?)
         '''
-        parametros = (nome, cpf, email, senha, tipo)
-        executar_comando(sql, parametros)
-        print(f"Usuário '{nome}' cadastrado com sucesso!")
+        executar_comando(sql, (nome, cpf, email, senha, tipo))
+        return True, f"Usuário '{nome}' cadastrado com sucesso!"
     except sqlite3.IntegrityError as e:
-        print(f"Erro ao cadastrar usuário: {e}")
+        return False, f"Erro ao cadastrar usuário: {e}"
 
-
-def login_user(email, senha):
+def verificar_login(email, senha):
     sql = "SELECT * FROM usuarios WHERE email = ? AND senha = ?"
     resultado = consultar(sql, (email, senha))
+    return bool(resultado)
 
-    if resultado:
-        print("Login bem-sucedido!")
-        return True
-    else:
-        print("Usuário ou senha inválidos!")
-        return False
-
-
-def list_users():
+def listar_usuarios():
     sql = "SELECT id, nome, cpf, email, tipo FROM usuarios"
-    usuarios = consultar(sql)
+    return consultar(sql)
 
-    if not usuarios:
-        print("Nenhum usuário cadastrado.")
-        return
+def usuario_existe(id=None, email=None):
+    sql = "SELECT * FROM usuarios WHERE id = ? OR email = ?"
+    resultado = consultar(sql, (id, email))
+    return bool(resultado)
 
-    for user in usuarios:
-        print(f"ID: {user[0]} - Nome: {user[1]} - CPF: {user[2]} - Email: {user[3]} - Tipo: {user[4]}")
+def checar_senha(id=None, email=None, senha=None):
+    sql = "SELECT * FROM usuarios WHERE (id = ? OR email = ?) AND senha = ?"
+    resultado = consultar(sql, (id, email, senha))
+    return bool(resultado)
 
-
-def edit_user(id=None, email=None, password=None, new_name=None, new_email=None, new_password=None, new_tipo=None):
+def editar_usuario(id=None, email=None, senha=None, novo_nome=None, novo_email=None, nova_senha=None, novo_tipo=None):
     sql_busca = "SELECT * FROM usuarios WHERE id = ? OR email = ?"
     usuario = consultar(sql_busca, (id, email))
-
     if not usuario:
-        print("Usuário não encontrado.")
-        return False
+        return False, "Usuário não encontrado."
 
-    sql_senha = "SELECT * FROM usuarios WHERE (id = ? OR email = ?) AND senha = ?"
-    check = consultar(sql_senha, (id, email, password))
-    if not check:
-        print("Senha incorreta.")
-        return False
+    if not checar_senha(id, email, senha):
+        return False, "Senha incorreta."
 
     campos = []
     parametros = []
 
-    if new_name:
+    if novo_nome:
         campos.append("nome = ?")
-        parametros.append(new_name)
-    if new_email:
+        parametros.append(novo_nome)
+    if novo_email:
         campos.append("email = ?")
-        parametros.append(new_email)
-    if new_password:
+        parametros.append(novo_email)
+    if nova_senha:
         campos.append("senha = ?")
-        parametros.append(new_password)
-    if new_tipo:
+        parametros.append(nova_senha)
+    if novo_tipo:
         campos.append("tipo = ?")
-        parametros.append(new_tipo)
+        parametros.append(novo_tipo)
 
     if not campos:
-        print("Nenhuma informação para atualizar.")
-        return True  # Usuário encontrado, mas não quis alterar nada.
+        return True, "Nenhuma informação para atualizar."
 
     parametros.append(id if id else None)
     parametros.append(email if email else None)
@@ -82,29 +71,108 @@ def edit_user(id=None, email=None, password=None, new_name=None, new_email=None,
     '''
 
     executar_comando(sql_update, tuple(parametros))
-    print("Usuário atualizado com sucesso!")
-    return True
+    return True, "Usuário atualizado com sucesso!"
 
-
-
-def delete_user(id_or_email):
+def deletar_usuario(id_ou_email):
     sql_verificar = "SELECT * FROM usuarios WHERE id = ? OR email = ?"
-    usuario = consultar(sql_verificar, (id_or_email, id_or_email))
-
+    usuario = consultar(sql_verificar, (id_ou_email, id_ou_email))
     if not usuario:
-        print("Usuário não encontrado.")
+        return False, "Usuário não encontrado."
+
+    executar_comando("DELETE FROM usuarios WHERE id = ? OR email = ?", (id_ou_email, id_ou_email))
+    return True, "Usuário deletado com sucesso!"
+
+
+# --- Funções interativas (inputs, prints, chamadas funções lógica) ---
+
+def cadastrar_usuario_interativo():
+    nome = input("Insira o nome do usuário: ")
+    cpf = input("Insira o CPF do usuário (somente números): ")
+    email = input("Insira o email do usuário: ")
+
+    while True:
+        tipo = input("Tipo de usuário ('cliente' ou 'funcionario'): ").lower()
+        if tipo in ["cliente", "funcionario"]:
+            break
+        else:
+            print("Tipo inválido. Digite 'cliente' ou 'funcionario'.")
+
+    while True:
+        senha = input("Insira a senha do usuário: ")
+        senha_confirmada = input("Confirme a senha do usuário: ")
+        if senha == senha_confirmada:
+            break
+        else:
+            print("Senhas diferentes. Tente novamente.")
+
+    sucesso, mensagem = registrar_usuario(nome, cpf, email, senha, tipo)
+    print(mensagem)
+
+def login_usuario_interativo():
+    email = input("Insira seu email: ")
+    senha = input("Insira sua senha: ")
+    if verificar_login(email, senha):
+        print("Login bem-sucedido!")
+    else:
+        print("Usuário ou senha inválidos!")
+
+def listar_usuarios_interativo():
+    usuarios = listar_usuarios()
+    if not usuarios:
+        print("Nenhum usuário cadastrado.")
         return
 
-    sql = "DELETE FROM usuarios WHERE id = ? OR email = ?"
-    executar_comando(sql, (id_or_email, id_or_email))
-    print("Usuário deletado com sucesso!")
+    for user in usuarios:
+        print(f"ID: {user[0]} - Nome: {user[1]} - CPF: {user[2]} - Email: {user[3]} - Tipo: {user[4]}")
 
-def user_exists(id=None, email=None):
-    sql = "SELECT * FROM usuarios WHERE id = ? OR email = ?"
-    resultado = consultar(sql, (id, email))
-    return bool(resultado)
+def editar_usuario_interativo():
+    listar_usuarios_interativo()
+    while True:
+        id_ou_email = input("Insira o ID ou email do usuário que deseja editar: ")
 
-def check_password(id=None, email=None, password=None):
-    sql = "SELECT * FROM usuarios WHERE (id = ? OR email = ?) AND senha = ?"
-    resultado = consultar(sql, (id, email, password))
-    return bool(resultado)
+        try:
+            id_usuario = int(id_ou_email)
+            email_usuario = None
+        except ValueError:
+            id_usuario = None
+            email_usuario = id_ou_email
+
+        if usuario_existe(id_usuario, email_usuario):
+            break
+        else:
+            print("Usuário não encontrado. Tente novamente.")
+
+    while True:
+        senha = input("Confirme a senha do usuário para editar: ")
+        if checar_senha(id_usuario, email_usuario, senha):
+            break
+        else:
+            print("Senha incorreta. Tente novamente.")
+
+    novo_nome = input("Novo nome (pressione Enter para manter o atual): ")
+    novo_email = input("Novo email (pressione Enter para manter o atual): ")
+    nova_senha = input("Nova senha (pressione Enter para manter a atual): ")
+    novo_tipo = input("Novo tipo ('cliente' ou 'funcionario', pressione Enter para manter): ").lower()
+
+    if novo_tipo not in ["cliente", "funcionario", ""]:
+        print("Tipo inválido. O tipo não será alterado.")
+        novo_tipo = None
+    elif novo_tipo == "":
+        novo_tipo = None
+
+    sucesso, mensagem = editar_usuario(
+        id=id_usuario,
+        email=email_usuario,
+        senha=senha,
+        novo_nome=novo_nome if novo_nome.strip() != "" else None,
+        novo_email=novo_email if novo_email.strip() != "" else None,
+        nova_senha=nova_senha if nova_senha.strip() != "" else None,
+        novo_tipo=novo_tipo
+    )
+    print(mensagem)
+
+def deletar_usuario_interativo():
+    listar_usuarios_interativo()
+    id_ou_email = input("Insira o ID ou email do usuário que deseja excluir: ")
+    sucesso, mensagem = deletar_usuario(id_ou_email)
+    print(mensagem)

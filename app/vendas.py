@@ -1,28 +1,109 @@
 from bancoDeDados.conexao import *
-from produtos import *
+import json
+from produtos import listar_produtos  # assumindo que listar_produtos está em produtos.py
+
+# --- Funções de lógica ---
 
 def calcular_total(carrinho):
     return sum(item["preco_unitario"] * item["quantidade"] for item in carrinho)
 
-def realizar_venda():
+def validar_login(email, senha):
+    sql = "SELECT id, nome FROM usuarios WHERE email = ? AND senha = ?"
+    resultado = consultar(sql, (email, senha))
+    if resultado:
+        return resultado[0]  # retorna (usuario_id, nome)
+    return None
+
+def obter_produto(id_produto):
+    sql = "SELECT nome, preco, tamanhos FROM produtos WHERE id = ?"
+    resultado = consultar(sql, (id_produto,))
+    return resultado[0] if resultado else None
+
+def verificar_estoque(produto_id, tamanho, quantidade):
+    sql = "SELECT quantidade FROM estoque WHERE produto_id = ? AND tamanho = ?"
+    resultado = consultar(sql, (produto_id, tamanho))
+    if resultado and resultado[0][0] >= quantidade:
+        return True
+    return False
+
+def salvar_venda(usuario_id, carrinho):
+    total = calcular_total(carrinho)
+    sql_venda = '''
+        INSERT INTO vendas (usuario_id, data, status, total)
+        VALUES (?, datetime('now'), 'pago', ?)
+    '''
+    cursor, conexao = executar_comando_com_retorno(sql_venda, (usuario_id, total))
+    venda_id = cursor.lastrowid
+
+    for item in carrinho:
+        sql_item = '''
+            INSERT INTO itens_venda (venda_id, produto_id, tamanho, quantidade, preco_unitario)
+            VALUES (?, ?, ?, ?, ?)
+        '''
+        cursor.execute(sql_item, (
+            venda_id,
+            item["produto_id"],
+            item["tamanho"],
+            item["quantidade"],
+            item["preco_unitario"]
+        ))
+        # Atualiza estoque
+        sql_update = '''
+            UPDATE estoque SET quantidade = quantidade - ? 
+            WHERE produto_id = ? AND tamanho = ?
+        '''
+        cursor.execute(sql_update, (
+            item["quantidade"],
+            item["produto_id"],
+            item["tamanho"]
+        ))
+
+    conexao.commit()
+    conexao.close()
+    return venda_id
+
+def buscar_vendas_usuario(usuario_id):
+    sql_vendas = '''
+        SELECT id, data, status, total FROM vendas WHERE usuario_id = ?
+    '''
+    return consultar(sql_vendas, (usuario_id,))
+
+def buscar_itens_venda(venda_id):
+    sql_itens = '''
+        SELECT p.nome, iv.tamanho, iv.quantidade, iv.preco_unitario
+        FROM itens_venda iv
+        JOIN produtos p ON iv.produto_id = p.id
+        WHERE iv.venda_id = ?
+    '''
+    return consultar(sql_itens, (venda_id,))
+
+def listar_todas_vendas():
+    sql = '''
+        SELECT v.id, v.data, v.status, v.total,
+               u.nome, u.cpf, u.email
+        FROM vendas v
+        JOIN usuarios u ON v.usuario_id = u.id
+        ORDER BY v.data DESC
+    '''
+    return consultar(sql)
+
+# --- Funções interativas (inputs/prints que chamam as funções acima) ---
+
+def realizar_venda_interativo():
     email = input("Digite seu email: ").strip()
     senha = input("Digite sua senha: ").strip()
 
-    sql = "SELECT id, nome FROM usuarios WHERE email = ? AND senha = ?"
-    resultado = consultar(sql, (email, senha))
-
-    if not resultado:
+    usuario = validar_login(email, senha)
+    if not usuario:
         print("Login inválido.")
         return
-
-    usuario_id, nome = resultado[0]
+    usuario_id, nome = usuario
     print(f"Bem-vindo, {nome}!")
 
     carrinho = []
 
     while True:
         listar_produtos()
-
         try:
             id_produto = int(input("ID do produto (ou 0 para finalizar): "))
             if id_produto == 0:
@@ -31,14 +112,12 @@ def realizar_venda():
             print("ID inválido.")
             continue
 
-        sql_prod = "SELECT nome, preco, tamanhos FROM produtos WHERE id = ?"
-        produto = consultar(sql_prod, (id_produto,))
-
+        produto = obter_produto(id_produto)
         if not produto:
             print("Produto não encontrado.")
             continue
 
-        nome_produto, preco, tamanhos_json = produto[0]
+        nome_produto, preco, tamanhos_json = produto
         tamanhos = json.loads(tamanhos_json)
 
         tamanho = input(f"Escolha o tamanho {tamanhos}: ").strip().upper()
@@ -52,14 +131,7 @@ def realizar_venda():
             print("Quantidade inválida.")
             continue
 
-        # Verificar estoque
-        sql_estoque = '''
-            SELECT quantidade FROM estoque
-            WHERE produto_id = ? AND tamanho = ?
-        '''
-        estoque = consultar(sql_estoque, (id_produto, tamanho))
-
-        if not estoque or estoque[0][0] < quantidade:
+        if not verificar_estoque(id_produto, tamanho, quantidade):
             print("Estoque insuficiente.")
             continue
 
@@ -86,58 +158,13 @@ def realizar_venda():
 
     confirmar = input("Deseja finalizar a compra? (S/N): ").strip().upper()
     if confirmar == "S":
-        finalizar_venda(usuario_id, carrinho)
+        venda_id = salvar_venda(usuario_id, carrinho)
+        print(f"Venda concluída com sucesso! ID da venda: {venda_id}")
     else:
         print("Venda cancelada.")
 
-
-def finalizar_venda(usuario_id, carrinho):
-    total = calcular_total(carrinho)
-
-    sql_venda = '''
-        INSERT INTO vendas (usuario_id, data, status, total)
-        VALUES (?, datetime('now'), 'pago', ?)
-    '''
-    cursor, conexao = executar_comando_com_retorno(sql_venda, (usuario_id, total))
-    venda_id = cursor.lastrowid
-
-    for item in carrinho:
-        sql_item = '''
-            INSERT INTO itens_venda (venda_id, produto_id, tamanho, quantidade, preco_unitario)
-            VALUES (?, ?, ?, ?, ?)
-        '''
-        cursor.execute(sql_item, (
-            venda_id,
-            item["produto_id"],
-            item["tamanho"],
-            item["quantidade"],
-            item["preco_unitario"]
-        ))
-
-        # Atualizar o estoque
-        sql_update_estoque = '''
-            UPDATE estoque
-            SET quantidade = quantidade - ?
-            WHERE produto_id = ? AND tamanho = ?
-        '''
-        cursor.execute(sql_update_estoque, (
-            item["quantidade"],
-            item["produto_id"],
-            item["tamanho"]
-        ))
-
-    conexao.commit()
-    conexao.close()
-    print(f"Venda concluída com sucesso! ID da venda: {venda_id}")
-
-
-def buscar_historico_vendas(usuario_id):
-    sql_vendas = '''
-        SELECT id, data, status, total FROM vendas
-        WHERE usuario_id = ?
-    '''
-    vendas = consultar(sql_vendas, (usuario_id,))
-
+def buscar_historico_vendas_interativo(usuario_id):
+    vendas = buscar_vendas_usuario(usuario_id)
     if not vendas:
         print("Nenhuma venda encontrada para este usuário.")
         return
@@ -146,31 +173,14 @@ def buscar_historico_vendas(usuario_id):
         venda_id, data, status, total = venda
         print(f"\nVenda ID: {venda_id} | Data: {data} | Status: {status} | Total: R$ {total}")
 
-        sql_itens = '''
-            SELECT p.nome, iv.tamanho, iv.quantidade, iv.preco_unitario
-            FROM itens_venda iv
-            JOIN produtos p ON iv.produto_id = p.id
-            WHERE iv.venda_id = ?
-        '''
-        itens = consultar(sql_itens, (venda_id,))
-
-        for item in itens:
-            nome, tamanho, quantidade, preco = item
+        itens = buscar_itens_venda(venda_id)
+        for nome, tamanho, quantidade, preco in itens:
             print(f"- {nome} | Tam: {tamanho} | Qtde: {quantidade} | Unitário: R$ {preco}")
 
         print('-'*40)
 
-
-def listar_vendas():
-    sql = '''
-        SELECT v.id, v.data, v.status, v.total,
-               u.nome, u.cpf, u.email
-        FROM vendas v
-        JOIN usuarios u ON v.usuario_id = u.id
-        ORDER BY v.data DESC
-    '''
-    vendas = consultar(sql)
-
+def listar_vendas_interativo():
+    vendas = listar_todas_vendas()
     if not vendas:
         print("\nNão há vendas registradas no sistema.")
         return
@@ -184,20 +194,24 @@ def listar_vendas():
         print(f"Status: {status}")
         print(f"Total: R$ {total:.2f}")
 
-        sql_itens = '''
-            SELECT p.nome, iv.tamanho, iv.quantidade, iv.preco_unitario
-            FROM itens_venda iv
-            JOIN produtos p ON iv.produto_id = p.id
-            WHERE iv.venda_id = ?
-        '''
-        itens = consultar(sql_itens, (venda_id,))
-
+        itens = buscar_itens_venda(venda_id)
         if itens:
             print("Itens da venda:")
-            for item in itens:
-                nome_produto, tamanho, quantidade, preco_unitario = item
+            for nome_produto, tamanho, quantidade, preco_unitario in itens:
                 print(f"  - {nome_produto} | Tam: {tamanho} | Qtde: {quantidade} | Unitário: R$ {preco_unitario:.2f}")
         else:
             print("Nenhum item encontrado para esta venda.")
 
         print('-'*50)
+
+
+def listar_compras_usuario_interativo():
+    email = input("Digite seu email: ").strip()
+    senha = input("Digite sua senha: ").strip()
+    usuario = validar_login(email, senha)
+    if not usuario:
+        print("Login inválido. Verifique email e senha.")
+        return
+    usuario_id, nome = usuario
+    print(f"\nBem-vindo(a), {nome}!")
+    buscar_historico_vendas_interativo(usuario_id)
