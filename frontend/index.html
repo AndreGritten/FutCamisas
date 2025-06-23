@@ -1,804 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FutCamisas - Your Football Jersey Store</title>
+    <title>FutCamisas - Sua Loja de Futebol</title>
+    <!-- Link para o arquivo CSS externo -->
+    <link rel="stylesheet" href="style.css">
+    <!-- Font Awesome para ícones -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --white: #FFFFFF;
-            --black: #000000;
-            --lilac: #C8A2C8;
-            --dark-purple: #4B0082;
-            --text-dark: #333;
-            --text-light: #f4f4f4;
-            --shadow: rgba(0, 0, 0, 0.1);
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Poppins', sans-serif;
-            line-height: 1.6;
-            color: var(--text-dark);
-            background-color: var(--white);
-            overflow-x: hidden;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-
-        .text-center {
-            text-align: center;
-        }
-
-        .py-4 {
-            padding-top: 2rem;
-            padding-bottom: 2rem;
-        }
-
-        .mb-4 {
-            margin-bottom: 2rem;
-        }
-
-        .main-header {
-            background: var(--dark-purple);
-            color: var(--white);
-            padding: 1rem 0;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            box-shadow: 0 2px 10px var(--shadow);
-            transition: all 0.3s ease;
-        }
-
-        .main-header.scrolled {
-            padding: 0.7rem 0;
-            background: rgba(75, 0, 130, 0.95);
-        }
-
-        .navbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: var(--white);
-            text-decoration: none;
-        }
-
-        .logo img {
-            height: 40px;
-            margin-right: 10px;
-            transition: transform 0.3s ease;
-        }
-
-        .logo img:hover {
-            transform: scale(1.1);
-        }
-
-        .nav-list {
-            list-style: none;
-            display: flex;
-        }
-
-        .nav-list li {
-            margin-left: 30px;
-        }
-
-        .nav-list a {
-            color: var(--white);
-            text-decoration: none;
-            font-weight: 600;
-            padding: 5px 0;
-            position: relative;
-            transition: color 0.3s ease;
-        }
-
-        .nav-list a::after {
-            content: '';
-            position: absolute;
-            left: 0;
-            bottom: 0;
-            width: 0;
-            height: 2px;
-            background-color: var(--lilac);
-            transition: width 0.3s ease;
-        }
-
-        .nav-list a:hover::after {
-            width: 100%;
-        }
-
-        .nav-list a:hover {
-            color: var(--lilac);
-        }
-
-        .menu-toggle {
-            display: none;
-            flex-direction: column;
-            cursor: pointer;
-        }
-
-        .menu-toggle span {
-            height: 3px;
-            width: 25px;
-            background: var(--white);
-            margin-bottom: 4px;
-            border-radius: 5px;
-            transition: all 0.3s ease;
-        }
-
-        .hero {
-            /* Background agora usa uma imagem local, coloque 'stadium_bg.jpg' em frontend/imagens/ */
-            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('imagens/stadium_bg.jpg') no-repeat center center/cover;
-            color: var(--white);
-            text-align: center;
-            padding: 100px 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-            min-height: 60vh;
-        }
-
-        .hero h1 {
-            font-size: 3.5rem;
-            margin-bottom: 1rem;
-            font-weight: 700;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-        }
-
-        .hero p {
-            font-size: 1.3rem;
-            margin-bottom: 2rem;
-            max-width: 700px;
-        }
-
-        .btn {
-            display: inline-block;
-            background: var(--lilac);
-            color: var(--dark-purple);
-            padding: 12px 25px;
-            text-decoration: none;
-            border-radius: 5px;
-            font-weight: 600;
-            transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
-            border: none;
-            cursor: pointer;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        }
-
-        .btn:hover {
-            background: var(--white);
-            transform: translateY(-3px);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
-        }
-
-        .btn-secondary {
-            background: var(--dark-purple);
-            color: var(--white);
-            border: 2px solid var(--lilac);
-        }
-
-        .btn-secondary:hover {
-            background: var(--lilac);
-            color: var(--dark-purple);
-            border-color: var(--dark-purple);
-        }
-
-        section {
-            padding: 60px 0;
-            background-color: var(--white);
-        }
-
-        section:nth-of-type(even) {
-            background-color: #f8f8f8;
-        }
-
-        h2 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            text-align: center;
-            margin-bottom: 40px;
-            color: var(--dark-purple);
-            position: relative;
-        }
-
-        h2::after {
-            content: '';
-            position: absolute;
-            bottom: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 80px;
-            height: 4px;
-            background-color: var(--lilac);
-            border-radius: 2px;
-        }
-
-        .product-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 30px;
-        }
-
-        .product-card {
-            background: var(--white);
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 5px 15px var(--shadow);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            text-align: center;
-            padding-bottom: 20px;
-            position: relative;
-        }
-
-        .product-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-        }
-
-        .product-card-image {
-            width: 100%;
-            height: 250px;
-            object-fit: cover;
-            object-position: center top;
-            transition: transform 0.5s ease;
-        }
-
-        .product-card:hover .product-card-image {
-            transform: scale(1.05);
-        }
-
-        .product-card h3 {
-            font-size: 1.4rem;
-            margin: 15px 0 5px;
-            color: var(--dark-purple);
-        }
-
-        .product-card .team-name {
-            font-size: 1rem;
-            color: #666;
-            margin-bottom: 10px;
-        }
-
-        .product-card .price {
-            font-size: 1.6rem;
-            font-weight: 700;
-            color: var(--lilac);
-            margin-bottom: 15px;
-        }
-
-        .product-card .btn {
-            font-size: 0.95rem;
-            padding: 10px 20px;
-        }
-
-        .products-page {
-            display: flex;
-            padding-top: 40px;
-        }
-
-        .sidebar {
-            width: 250px;
-            padding-right: 30px;
-        }
-
-        .sidebar h3 {
-            font-size: 1.5rem;
-            color: var(--dark-purple);
-            margin-bottom: 20px;
-            border-bottom: 2px solid var(--lilac);
-            padding-bottom: 10px;
-        }
-
-        .filter-group {
-            margin-bottom: 30px;
-        }
-
-        .filter-group label {
-            display: block;
-            font-weight: 600;
-            margin-bottom: 10px;
-            color: var(--text-dark);
-        }
-
-        .filter-group select,
-        .filter-group input[type="range"] {
-            width: 100%;
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-family: 'Poppins', sans-serif;
-        }
-
-        .price-range-display {
-            margin-top: 5px;
-            font-size: 0.9rem;
-            color: #555;
-        }
-
-        .main-content {
-            flex-grow: 1;
-        }
-
-        .product-detail-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 40px;
-            padding: 40px 0;
-            align-items: flex-start;
-        }
-
-        .product-images {
-            flex: 1;
-            min-width: 300px;
-            max-width: 50%;
-            position: relative;
-            overflow: hidden;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px var(--shadow);
-        }
-
-        .main-image {
-            width: 100%;
-            display: block;
-            border-radius: 10px;
-            transition: transform 0.5s ease-in-out;
-        }
-
-        .product-images:hover .main-image {
-            transform: scale(1.05);
-        }
-
-        .product-info {
-            flex: 1;
-            min-width: 300px;
-            max-width: 45%;
-        }
-
-        .product-info h1 {
-            font-size: 2.8rem;
-            color: var(--dark-purple);
-            margin-bottom: 10px;
-        }
-
-        .product-info .team-name {
-            font-size: 1.4rem;
-            color: #666;
-            margin-bottom: 15px;
-        }
-
-        .product-info .price {
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: var(--lilac);
-            margin-bottom: 25px;
-        }
-
-        .product-info .description {
-            font-size: 1.1rem;
-            line-height: 1.8;
-            margin-bottom: 30px;
-            color: var(--text-dark);
-        }
-
-        .options-group {
-            margin-bottom: 25px;
-        }
-
-        .options-group label {
-            display: block;
-            font-weight: 600;
-            margin-bottom: 10px;
-            font-size: 1.1rem;
-        }
-
-        .size-selector button {
-            background: #f0f0f0;
-            border: 1px solid #ddd;
-            padding: 10px 15px;
-            margin-right: 10px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
-
-        .size-selector button:hover {
-            background: var(--lilac);
-            color: var(--white);
-            border-color: var(--dark-purple);
-        }
-
-        .size-selector button.selected {
-            background: var(--dark-purple);
-            color: var(--white);
-            border-color: var(--lilac);
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-        }
-
-        .quantity-selector {
-            display: flex;
-            align-items: center;
-        }
-
-        .quantity-selector input {
-            width: 60px;
-            padding: 8px;
-            text-align: center;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            margin: 0 10px;
-            font-size: 1rem;
-        }
-
-        .quantity-selector button {
-            background: var(--lilac);
-            color: var(--white);
-            border: none;
-            padding: 8px 12px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1.2rem;
-            transition: background 0.3s ease;
-        }
-
-        .quantity-selector button:hover {
-            background: var(--dark-purple);
-        }
-
-        .add-to-cart-btn {
-            width: 100%;
-            padding: 15px;
-            font-size: 1.3rem;
-            margin-top: 30px;
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0% {
-                box-shadow: 0 0 0 0 rgba(193, 162, 193, 0.7);
-            }
-
-            70% {
-                box-shadow: 0 0 0 10px rgba(193, 162, 193, 0);
-            }
-
-            100% {
-                box-shadow: 0 0 0 0 rgba(193, 162, 193, 0);
-            }
-        }
-
-        .related-products {
-            margin-top: 60px;
-        }
-
-        .cart-page {
-            padding: 40px 0;
-        }
-
-        .cart-items {
-            background: var(--white);
-            border-radius: 10px;
-            box-shadow: 0 5px 15px var(--shadow);
-            padding: 30px;
-        }
-
-        .cart-item {
-            display: flex;
-            align-items: center;
-            border-bottom: 1px solid #eee;
-            padding: 20px 0;
-        }
-
-        .cart-item:last-child {
-            border-bottom: none;
-        }
-
-        .cart-item-image {
-            width: 100px;
-            height: 100px;
-            object-fit: cover;
-            border-radius: 8px;
-            margin-right: 20px;
-        }
-
-        .cart-item-details {
-            flex-grow: 1;
-        }
-
-        .cart-item-details h4 {
-            font-size: 1.3rem;
-            color: var(--dark-purple);
-            margin-bottom: 5px;
-        }
-
-        .cart-item-details .price {
-            font-weight: 600;
-            color: var(--lilac);
-            margin-bottom: 10px;
-        }
-
-        .cart-item-quantity {
-            display: flex;
-            align-items: center;
-            margin-right: 30px;
-        }
-
-        .cart-item-quantity input {
-            width: 50px;
-            text-align: center;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            padding: 5px;
-            font-size: 1rem;
-        }
-
-        .cart-item-quantity button {
-            background: #eee;
-            border: 1px solid #ddd;
-            padding: 5px 10px;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background 0.3s ease;
-        }
-
-        .cart-item-quantity button:hover {
-            background: #ddd;
-        }
-
-        .remove-item-btn {
-            background: none;
-            border: none;
-            color: #dc3545;
-            cursor: pointer;
-            font-size: 1.5rem;
-            transition: color 0.3s ease;
-        }
-
-        .remove-item-btn:hover {
-            color: #c82333;
-        }
-
-        .cart-summary {
-            margin-top: 30px;
-            padding: 25px;
-            background: #f8f8f8;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
-            text-align: right;
-        }
-
-        .cart-summary p {
-            font-size: 1.4rem;
-            font-weight: 600;
-            margin-bottom: 15px;
-            color: var(--dark-purple);
-        }
-
-        .cart-summary p span {
-            color: var(--lilac);
-            font-size: 1.6rem;
-        }
-
-        .cart-actions {
-            display: flex;
-            justify-content: flex-end;
-            gap: 15px;
-            margin-top: 20px;
-        }
-
-        .main-footer {
-            background: var(--dark-purple);
-            color: var(--white);
-            padding: 40px 0;
-            text-align: center;
-        }
-
-        .main-footer .container {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-around;
-            text-align: left;
-        }
-
-        .footer-col {
-            flex-basis: 22%;
-            margin-bottom: 20px;
-            min-width: 180px;
-        }
-
-        .footer-col h4 {
-            font-size: 1.2rem;
-            margin-bottom: 20px;
-            position: relative;
-            padding-bottom: 10px;
-        }
-
-        .footer-col h4::after {
-            content: '';
-            position: absolute;
-            left: 0;
-            bottom: 0;
-            width: 50px;
-            height: 2px;
-            background-color: var(--lilac);
-        }
-
-        .footer-col ul {
-            list-style: none;
-        }
-
-        .footer-col ul li:not(:last-child) {
-            margin-bottom: 10px;
-        }
-
-        .footer-col ul a {
-            color: var(--white);
-            text-decoration: none;
-            transition: color 0.3s ease;
-        }
-
-        .footer-col ul a:hover {
-            color: var(--lilac);
-        }
-
-        .social-links a {
-            display: inline-block;
-            height: 40px;
-            width: 40px;
-            background-color: rgba(255, 255, 255, 0.2);
-            margin: 0 10px 10px 0;
-            text-align: center;
-            line-height: 40px;
-            border-radius: 50%;
-            color: var(--white);
-            transition: all 0.3s ease;
-            font-size: 1.2rem;
-        }
-
-        .social-links a:hover {
-            background-color: var(--lilac);
-            transform: translateY(-5px);
-        }
-
-        .footer-bottom {
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            font-size: 0.9rem;
-        }
-
-        @media (max-width: 768px) {
-            .navbar {
-                flex-wrap: wrap;
-            }
-
-            .logo {
-                width: 100%;
-                justify-content: center;
-                margin-bottom: 20px;
-            }
-
-            .menu-toggle {
-                display: flex;
-                position: absolute;
-                right: 20px;
-                top: 25px;
-            }
-
-            .nav-list {
-                flex-direction: column;
-                width: 100%;
-                background: var(--dark-purple);
-                position: absolute;
-                top: 80px;
-                left: 0;
-                transform: translateX(-100%);
-                transition: transform 0.3s ease-in-out;
-                z-index: 999;
-                padding: 20px 0;
-                align-items: center;
-            }
-
-            .nav-list.active {
-                transform: translateX(0);
-            }
-
-            .nav-list li {
-                margin: 15px 0;
-            }
-
-            .hero h1 {
-                font-size: 2.5rem;
-            }
-
-            .hero p {
-                font-size: 1rem;
-            }
-
-            .product-detail-container {
-                flex-direction: column;
-                align-items: center;
-            }
-
-            .product-images,
-            .product-info {
-                max-width: 90%;
-            }
-
-            .cart-item {
-                flex-direction: column;
-                align-items: flex-start;
-                text-align: center;
-            }
-
-            .cart-item-image {
-                margin-bottom: 15px;
-                margin-right: 0;
-            }
-
-            .cart-item-details,
-            .cart-item-quantity,
-            .remove-item-btn {
-                width: 100%;
-                text-align: center;
-                margin-bottom: 10px;
-            }
-
-            .cart-item-quantity {
-                justify-content: center;
-            }
-
-            .cart-actions {
-                flex-direction: column;
-                align-items: center;
-            }
-
-            .cart-actions .btn {
-                width: 90%;
-                margin-bottom: 15px;
-            }
-
-            .footer-col {
-                flex-basis: 45%;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .logo {
-                font-size: 1.5rem;
-            }
-
-            .hero h1 {
-                font-size: 2rem;
-            }
-
-            h2 {
-                font-size: 2rem;
-            }
-
-            .footer-col {
-                flex-basis: 90%;
-            }
-        }
-    </style>
 </head>
 
 <body>
@@ -816,89 +27,159 @@
             </div>
             <nav>
                 <ul class="nav-list" id="nav-list">
-                    <li><a href="#home">Home</a></li>
-                    <li><a href="#products">Camisetas</a></li>
-                    <li><a href="#teams">Times</a></li>
-                    <li><a href="#cart">Carrinho</a></li>
-                    <li><a href="#login">Perfil/Login</a></li>
+                    <li id="nav-home-link"><a href="#home">Home</a></li>
+                    <li id="nav-products-link"><a href="#products">Camisetas</a></li>
+                    <li id="nav-teams-link"><a href="#teams">Times</a></li>
+                    <li id="nav-cart-link">
+                        <a href="#cart" class="cart-icon-container">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span class="cart-count" id="cart-item-count">0</span>
+                        </a>
+                    </li>
+                    <li id="nav-profile-link" style="display: none;"><a href="#profile">Meu Perfil</a></li>
+                    <li id="nav-admin-link" style="display: none;"><a href="#admin">Painel Admin</a></li>
+                    <li id="nav-login-link"><a href="#login">Login</a></li>
+                    <li id="nav-logout-link" style="display: none;"><a href="#" id="logout-btn">Sair</a></li>
                 </ul>
             </nav>
         </div>
     </header>
 
     <main>
-        <section id="home" class="hero">
-            <h1>Impressione seu time: Camisas Oficiais de Futebol</h1>
-            <p>Explore os mais recentes e icônicos modelos de camisas de futebol dos seus times favoritos. Qualidade
-                incomparável e design autêntico</p>
-            <a href="#products" class="btn" id="shop-now-btn">Shop Now</a>
-        </section>
-
-        <!-- Seção de Camisas em Destaque (será populada por JS) -->
-        <section id="featured-products" class="py-4">
-            <div class="container">
-                <h2>Camisas em Destaque</h2>
-                <div class="product-grid" id="featured-products-grid">
-                    <!-- Os cards de produtos em destaque serão inseridos aqui pelo JavaScript -->
-                </div>
+        <!-- Seção 1: Tela de Login / Cadastro (Inicialmente Visível, as outras ocultas por padrão no JS) -->
+        <section id="login-register-page" class="auth-form-container">
+            <div class="auth-form">
+                <h2>Login</h2>
+                <div id="login-message" class="message-box"></div>
+                <form id="login-form">
+                    <div class="input-group">
+                        <label for="login-email">Email:</label>
+                        <input type="email" id="login-email" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="login-password">Senha:</label>
+                        <input type="password" id="login-password" required>
+                    </div>
+                    <button type="submit" class="btn">Entrar</button>
+                </form>
+                <button id="show-register-modal" class="link-button">Não tenho conta</button>
             </div>
         </section>
 
-        <!-- Seção de Todas as Camisetas (será populada pelo JS) -->
-        <section id="products" class="py-4">
-            <div class="container products-page">
-                <div class="sidebar">
-                    <h3>Filtre camisas</h3>
-                    <div class="filter-group">
-                        <label for="team-filter">Por time</label>
-                        <select id="team-filter">
-                            <option value="">Todos os times</option>
-                            <option value="Flamengo">Flamengo</option>
-                            <option value="Palmeiras">Palmeiras</option>
-                            <option value="Corinthians">Corinthians</option>
-                            <option value="São Paulo">São Paulo</option>
-                            <option value="Vasco">Vasco</option>
-                            <option value="Grêmio">Grêmio</option>
-                            <option value="Internacional">Internacional</option>
-                            <option value="Cruzeiro">Cruzeiro</option>
-                            <option value="Atlético-MG">Atlético-MG</option>
-                            <option value="Santos">Santos</option>
-                        </select>
+        <!-- Modal de Cadastro (Inicialmente Oculto) -->
+        <div id="register-modal" class="modal">
+            <div class="modal-content">
+                <span class="close-button" id="close-register-modal">&times;</span>
+                <h2>Cadastro</h2>
+                <div id="register-message" class="message-box"></div>
+                <form id="register-form">
+                    <div class="input-group">
+                        <label for="register-name">Nome:</label>
+                        <input type="text" id="register-name" required>
                     </div>
-                    <div class="filter-group">
-                        <label for="price-range">Por preço</label>
-                        <input type="range" id="price-range" min="30" max="300" value="300">
-                        <p class="price-range-display">Preço Máximo: R$ <span id="price-value">300.00</span></p>
+                    <div class="input-group">
+                        <label for="register-cpf">CPF:</label>
+                        <input type="text" id="register-cpf" required maxlength="11" pattern="\d{11}"
+                            title="CPF deve conter 11 dígitos numéricos">
                     </div>
-                    <div class="filter-group">
-                        <label for="popularity-filter">Ordenar</label>
-                        <select id="popularity-filter">
-                            <option value="default">Padrão</option>
-                            <option value="low-to-high">Preço: Baixo para Alto</option>
-                            <option value="high-to-low">Preço: Alto para Baixo</option>
-                            <!-- 'Mais virais' e 'Novidades' precisariam de dados no backend -->
-                        </select>
+                    <div class="input-group">
+                        <label for="register-email">Email:</label>
+                        <input type="email" id="register-email" required>
                     </div>
-                    <div class="filter-group">
-                        <label for="availability-filter">Por disponibilidade</label>
-                        <select id="availability-filter">
-                            <option value="all">Todos</option>
-                            <option value="in-stock">No estoque</option>
-                            <option value="out-of-stock">Fora de estoque</option>
-                        </select>
+                    <div class="input-group">
+                        <label for="register-password">Senha:</label>
+                        <input type="password" id="register-password" required>
                     </div>
-                </div>
-                <div class="main-content">
-                    <h2>Todas as camisetas</h2>
-                    <div class="product-grid" id="all-products-grid">
-                        <!-- Os cards de produtos do backend serão inseridos aqui pelo JavaScript -->
+                    <div class="input-group">
+                        <label for="register-confirm-password">Confirmar Senha:</label>
+                        <input type="password" id="register-confirm-password" required>
                     </div>
-                </div>
+                    <button type="submit" class="btn">Cadastrar</button>
+                </form>
             </div>
+        </div>
+
+        <!-- Seção 2: Página Home/Catálogo de Produtos (Oculta por padrão no CSS/JS) -->
+        <section id="home-products-section">
+            <section id="home" class="hero">
+                <h1>Impressione seu time: Camisas Oficiais de Futebol</h1>
+                <p>Explore os mais recentes e icônicos modelos de camisas de futebol dos seus times favoritos. Qualidade
+                    incomparável e design autêntico</p>
+                <a href="#products" class="btn" id="shop-now-btn">Shop Now</a>
+            </section>
+
+            <section id="featured-products" class="py-4">
+                <div class="container">
+                    <h2>Camisas em Destaque</h2>
+                    <div class="product-grid" id="featured-products-grid">
+                        <!-- Os cards de produtos em destaque serão inseridos aqui pelo JavaScript -->
+                        <div class="spinner"></div> <!-- Placeholder de carregamento -->
+                    </div>
+                </div>
+            </section>
+
+            <section id="products" class="py-4">
+                <div class="container products-page">
+                    <div class="sidebar">
+                        <h3>Filtre camisas</h3>
+                        <div class="filter-group">
+                            <label for="team-filter">Por time</label>
+                            <select id="team-filter">
+                                <option value="">Todos os times</option>
+                                <option value="Flamengo">Flamengo</option>
+                                <option value="Palmeiras">Palmeiras</option>
+                                <option value="Corinthians">Corinthians</option>
+                                <option value="São Paulo">São Paulo</option>
+                                <option value="Vasco">Vasco</option>
+                                <option value="Grêmio">Grêmio</option>
+                                <option value="Internacional">Internacional</option>
+                                <option value="Cruzeiro">Cruzeiro</option>
+                                <option value="Atlético-MG">Atlético-MG</option>
+                                <option value="Santos">Santos</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label for="search-input">Buscar por nome</label>
+                            <input type="text" id="search-input" placeholder="Ex: Flamengo 2024">
+                        </div>
+                        <div class="filter-group">
+                            <label for="price-range">Por preço</label>
+                            <input type="range" id="price-range" min="0" max="500" value="500"> <!-- Aumentei o max -->
+                            <p class="price-range-display">Preço Máximo: R$ <span id="price-value">500.00</span></p>
+                        </div>
+                        <div class="filter-group">
+                            <label for="popularity-filter">Ordenar</label>
+                            <select id="popularity-filter">
+                                <option value="default">Padrão</option>
+                                <option value="low-to-high">Preço: Baixo para Alto</option>
+                                <option value="high-to-low">Preço: Alto para Baixo</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label for="availability-filter">Por disponibilidade</label>
+                            <select id="availability-filter">
+                                <option value="all">Todos</option>
+                                <option value="in-stock">No estoque</option>
+                                <option value="out-of-stock">Fora de estoque</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <button id="clear-filters-btn">Limpar Filtros</button>
+                        </div>
+                    </div>
+                    <div class="main-content">
+                        <h2>Todas as camisetas</h2>
+                        <div class="product-grid" id="all-products-grid">
+                            <!-- Os cards de produtos do backend serão inseridos aqui pelo JavaScript -->
+                            <div class="spinner"></div> <!-- Placeholder de carregamento -->
+                        </div>
+                    </div>
+                </div>
+            </section>
         </section>
 
-        <!-- Seção de Detalhes do Produto (será populada pelo JS e escondida por padrão) -->
-        <section id="product-detail-page" class="py-4" style="display: none;">
+        <!-- Seção 3: Página de Detalhes do Produto (Oculta por padrão no CSS/JS) -->
+        <section id="product-detail-page" class="py-4">
             <div class="container product-detail-container">
                 <div class="product-images">
                     <img src="imagens/placeholder_detail.png" alt="Detailed Jersey Image" class="main-image"
@@ -937,9 +218,8 @@
             </div>
         </section>
 
-
-        <!-- Seção do Carrinho -->
-        <section id="cart" class="cart-page py-4" style="display: none;">
+        <!-- Seção 4: Página do Carrinho (Oculta por padrão no CSS/JS) -->
+        <section id="cart-page-section" class="cart-page py-4">
             <div class="container">
                 <h2>Seu carrinho</h2>
                 <div class="cart-items" id="cart-items-container">
@@ -956,6 +236,254 @@
                 </div>
             </div>
         </section>
+
+        <!-- Seção 5: Página de Perfil do Cliente (Oculta por padrão no CSS/JS) -->
+        <section id="profile-page-section" class="profile-container py-4">
+            <div class="profile-form">
+                <h2>Meu Perfil</h2>
+                <div id="profile-message" class="message-box"></div>
+                <form id="profile-form">
+                    <div class="input-group">
+                        <label for="profile-name">Nome:</label>
+                        <input type="text" id="profile-name" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="profile-cpf">CPF:</label>
+                        <input type="text" id="profile-cpf" disabled> <!-- CPF não editável -->
+                    </div>
+                    <div class="input-group">
+                        <label for="profile-email">Email:</label>
+                        <input type="email" id="profile-email" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="profile-password">Senha Atual:</label>
+                        <input type="password" id="profile-password" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="profile-new-password">Nova Senha (opcional):</label>
+                        <input type="password" id="profile-new-password">
+                    </div>
+                    <div class="input-group">
+                        <label for="profile-confirm-new-password">Confirmar Nova Senha:</label>
+                        <input type="password" id="profile-confirm-new-password">
+                    </div>
+                    <button type="submit" class="btn">Salvar Alterações</button>
+                </form>
+            </div>
+        </section>
+
+        <!-- Seção 6: Painel de Administração / Funcionário (Oculta por padrão no CSS/JS) -->
+        <section id="admin-dashboard-section" class="admin-dashboard py-4">
+            <div class="container">
+                <h2>Painel de Administração</h2>
+                <div class="menu-grid">
+                    <div class="menu-card" id="manage-users-btn">
+                        <i class="fas fa-users"></i>
+                        <h4>Gerenciar Usuários</h4>
+                    </div>
+                    <div class="menu-card" id="manage-products-btn">
+                        <i class="fas fa-tshirt"></i>
+                        <h4>Gerenciar Produtos</h4>
+                    </div>
+                    <div class="menu-card" id="manage-sales-btn">
+                        <i class="fas fa-chart-line"></i>
+                        <h4>Gerenciar Vendas</h4>
+                    </div>
+                    <div class="menu-card" id="manage-stock-btn">
+                        <i class="fas fa-boxes"></i>
+                        <h4>Gerenciar Estoque</h4>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Seção 6.1: Gerenciar Usuários (Oculta por padrão no CSS/JS) -->
+        <section id="admin-manage-users" class="management-section py-4">
+            <div class="container">
+                <h2>Gerenciar Usuários</h2>
+                <div id="users-management-message" class="message-box"></div>
+                <div class="actions">
+                    <button class="btn" id="add-user-modal-btn">Adicionar Novo Usuário</button>
+                    <button class="btn btn-secondary" id="back-to-admin-dashboard-from-users">Voltar</button>
+                </div>
+                <table id="users-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nome</th>
+                            <th>CPF</th>
+                            <th>Email</th>
+                            <th>Tipo</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Usuários serão carregados aqui -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Modal para Adicionar/Editar Usuário (Reutiliza modal CSS) -->
+        <div id="user-form-modal" class="modal management-form-modal">
+            <div class="modal-content">
+                <span class="close-button" id="close-user-form-modal">&times;</span>
+                <h2 id="user-modal-title"></h2>
+                <div id="user-form-message" class="message-box"></div>
+                <form id="user-management-form">
+                    <input type="hidden" id="user-id-field">
+                    <div class="input-group">
+                        <label for="user-name-field">Nome:</label>
+                        <input type="text" id="user-name-field" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="user-cpf-field">CPF:</label>
+                        <input type="text" id="user-cpf-field" required maxlength="11" pattern="\d{11}"
+                            title="CPF deve conter 11 dígitos numéricos">
+                    </div>
+                    <div class="input-group">
+                        <label for="user-email-field">Email:</label>
+                        <input type="email" id="user-email-field" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="user-password-field">Senha (para cadastro/confirmação):</label>
+                        <input type="password" id="user-password-field" required>
+                    </div>
+                    <!-- Campos para nova senha em modo edição -->
+                    <div class="input-group" id="user-new-password-group">
+                        <label for="user-new-password-field">Nova Senha (opcional):</label>
+                        <input type="password" id="user-new-password-field">
+                    </div>
+                    <div class="input-group" id="user-confirm-new-password-group">
+                        <label for="user-confirm-new-password-field">Confirmar Nova Senha:</label>
+                        <input type="password" id="user-confirm-new-password-field">
+                    </div>
+                    <div class="input-group">
+                        <label for="user-type-field">Tipo:</label>
+                        <select id="user-type-field" required>
+                            <option value="cliente">Cliente</option>
+                            <option value="funcionario">Funcionário</option>
+                        </select>
+                    </div>
+                    <div class="btn-group">
+                        <button type="submit" class="btn" id="user-form-submit-btn">Salvar</button>
+                        <button type="button" class="btn btn-secondary" id="user-form-cancel-btn">Cancelar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Seção 6.2: Gerenciar Produtos (Oculta por padrão no CSS/JS) -->
+        <section id="admin-manage-products" class="management-section py-4">
+            <div class="container">
+                <h2>Gerenciar Produtos</h2>
+                <div id="products-management-message" class="message-box"></div>
+                <div class="actions">
+                    <button class="btn" id="add-product-modal-btn">Adicionar Novo Produto</button>
+                    <button class="btn btn-secondary" id="back-to-admin-dashboard-from-products">Voltar</button>
+                </div>
+                <table id="products-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nome</th>
+                            <th>Preço</th>
+                            <th>Tamanhos</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Produtos serão carregados aqui -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Modal para Adicionar/Editar Produto (Reutiliza modal CSS) -->
+        <div id="product-form-modal" class="modal management-form-modal">
+            <div class="modal-content">
+                <span class="close-button" id="close-product-form-modal">&times;</span>
+                <h2 id="product-modal-title"></h2>
+                <div id="product-form-message" class="message-box"></div>
+                <form id="product-management-form">
+                    <input type="hidden" id="product-id-field">
+                    <div class="input-group">
+                        <label for="product-name-field">Nome:</label>
+                        <input type="text" id="product-name-field" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="product-price-field">Preço:</label>
+                        <input type="number" id="product-price-field" step="0.01" required>
+                    </div>
+                    <div class="input-group">
+                        <label>Tamanhos e Quantidades:</label>
+                        <div id="sizes-quantities-container">
+                            <!-- Campos de tamanho e quantidade serão adicionados aqui dinamicamente -->
+                        </div>
+                        <button type="button" class="btn btn-secondary" id="add-size-qty-field">Adicionar
+                            Tamanho</button>
+                    </div>
+                    <div class="btn-group">
+                        <button type="submit" class="btn" id="product-form-submit-btn">Salvar</button>
+                        <button type="button" class="btn btn-secondary" id="product-form-cancel-btn">Cancelar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Seção 6.3: Gerenciar Vendas (Oculta por padrão no CSS/JS) -->
+        <section id="admin-manage-sales" class="management-section py-4">
+            <div class="container">
+                <h2>Gerenciar Vendas</h2>
+                <div id="sales-management-message" class="message-box"></div>
+                <div class="actions">
+                    <button class="btn btn-secondary" id="back-to-admin-dashboard-from-sales">Voltar</button>
+                </div>
+                <table id="sales-table">
+                    <thead>
+                        <tr>
+                            <th>ID Venda</th>
+                            <th>Data</th>
+                            <th>Status</th>
+                            <th>Total</th>
+                            <th>Cliente</th>
+                            <th>Email Cliente</th>
+                            <th>Itens</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Vendas serão carregadas aqui -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Seção 6.4: Gerenciar Estoque (Oculta por padrão no CSS/JS) -->
+        <section id="admin-manage-stock" class="management-section py-4">
+            <div class="container">
+                <h2>Gerenciar Estoque</h2>
+                <div id="stock-management-message" class="message-box"></div>
+                <div class="actions">
+                    <button class="btn btn-secondary" id="back-to-admin-dashboard-from-stock">Voltar</button>
+                </div>
+                <table id="stock-table">
+                    <thead>
+                        <tr>
+                            <th>ID Produto</th>
+                            <th>Nome Produto</th>
+                            <th>Tamanho</th>
+                            <th>Quantidade</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Estoque será carregado aqui -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+
     </main>
 
     <footer class="main-footer">
@@ -1003,530 +531,8 @@
         </div>
     </footer>
 
-    <!-- Script para ícones das redes sociais (Font Awesome) -->
-    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
-
-    <script>
-        // URL base da sua API Flask
-        const API_BASE_URL = 'http://127.0.0.1:5000/api';
-
-        let allProducts = []; // Armazenar todos os produtos do backend globalmente
-        let cart = []; // Armazenar os itens do carrinho
-
-        // --- Funções de UI (interação visual) ---
-
-        // Ativar/desativar menu mobile
-        document.getElementById('mobile-menu').addEventListener('click', function () {
-            const navList = document.getElementById('nav-list');
-            navList.classList.toggle('active');
-        });
-
-        // Animação do header ao rolar
-        window.addEventListener('scroll', function () {
-            const header = document.querySelector('.main-header');
-            if (window.scrollY > 50) {
-                header.classList.add('scrolled');
-            } else {
-                header.classList.remove('scrolled');
-            }
-        });
-
-        // Seletores de seções (melhor organização)
-        const homeSection = document.getElementById('home');
-        const featuredProductsSection = document.getElementById('featured-products');
-        const productsSection = document.getElementById('products');
-        const productDetailPage = document.getElementById('product-detail-page');
-        const cartPage = document.getElementById('cart');
-
-        // Função para mostrar ou esconder seções
-        function showSection(sectionElement) {
-            document.querySelectorAll('main section').forEach(section => {
-                section.style.display = 'none';
-            });
-            if (sectionElement) {
-                // Algumas seções são flex, outras block, por padrão
-                if (sectionElement === homeSection || sectionElement === productsSection) {
-                    sectionElement.style.display = 'flex';
-                } else {
-                    sectionElement.style.display = 'block';
-                }
-            }
-            window.scrollTo(0, 0); // Rola para o topo da página
-        }
-
-        // Funções de navegação específicas
-        function showHomePage() {
-            showSection(homeSection);
-            featuredProductsSection.style.display = 'block'; // Garante que Destaques apareça na Home
-            // A seção 'products' (com sidebar) é geralmente mostrada na página de "Camisetas"
-            productsSection.style.display = 'none'; // Esconde na home, se desejar
-        }
-
-        function showProductsListingPage() { // Exibe a página completa de produtos com filtros
-            showSection(productsSection); // productsSection já inclui sidebar e main-content
-            homeSection.style.display = 'flex'; // Exibe o hero banner também, se quiser manter
-            featuredProductsSection.style.display = 'block'; // Exibe a seção de destaques também
-            window.scrollTo(0, 0);
-        }
-
-        function showCartListingPage() {
-            showSection(cartPage);
-            renderCart(); // Garante que o carrinho esteja atualizado ao entrar
-        }
-
-
-        // Função para mostrar a página de detalhes do produto
-        function showProductDetailPage(productId) {
-            const product = allProducts.find(p => p.id === productId);
-            if (!product) {
-                console.error("Produto não encontrado para ID:", productId);
-                return;
-            }
-
-            // Popula os elementos da página de detalhes
-            document.getElementById('detail-product-image').src = `imagens/camisa_${product.id}.png`;
-            document.getElementById('detail-product-image').alt = product.nome;
-            // Fallback para imagem caso não exista
-            document.getElementById('detail-product-image').onerror = function () {
-                this.onerror = null;
-                this.src = 'imagens/placeholder_detail.png'; // Imagem placeholder para detalhes
-            };
-
-            document.getElementById('detail-product-name').innerText = product.nome;
-            // Exemplo simples para pegar o nome do time (pode precisar de refinamento)
-            const teamNameMatch = product.nome.match(/Camisa\s([^\s]+)/i); // Regex para pegar a palavra depois de "Camisa"
-            document.getElementById('detail-team-name').innerText = teamNameMatch ? teamNameMatch[1] : 'Time';
-
-            document.getElementById('detail-product-price').innerText = `R$ ${product.preco.toFixed(2).replace('.', ',')}`;
-            document.getElementById('detail-product-description').innerText = "Mostre seu apoio ao seu time com a camisa oficial! Confeccionada em tecido respirável de alto desempenho, essa camisa oferece conforto e estilo dentro e fora dos campos. Conta com o escudo do time bordado e os logos oficiais dos patrocinadores. Disponível em diversos tamanhos.";
-
-            // Renderiza os seletores de tamanho
-            const sizeSelector = document.getElementById('detail-size-selector');
-            sizeSelector.innerHTML = ''; // Limpa seletores anteriores
-            let currentSelectedSize = ''; // Variável para o tamanho selecionado na página de detalhes
-
-            // Converte o objeto de tamanhos para um array de chaves e filtra os com quantidade > 0
-            const availableSizes = Object.keys(product.tamanhos).filter(size => product.tamanhos[size] > 0);
-
-            if (availableSizes.length > 0) {
-                availableSizes.forEach(size => {
-                    const button = document.createElement('button');
-                    button.dataset.size = size;
-                    button.innerText = `${size} (${product.tamanhos[size]} un)`; // Mostra quantidade disponível
-                    button.addEventListener('click', function () {
-                        document.querySelectorAll('#detail-size-selector button').forEach(btn => btn.classList.remove('selected'));
-                        this.classList.add('selected');
-                        currentSelectedSize = this.dataset.size;
-                        // Atualiza o max da quantidade com base no estoque do tamanho
-                        document.getElementById('quantity').max = product.tamanhos[currentSelectedSize];
-                        document.getElementById('quantity').value = 1; // Reseta para 1 ao mudar de tamanho
-                    });
-                    sizeSelector.appendChild(button);
-                });
-                // Seleciona o primeiro tamanho disponível por padrão
-                const defaultButton = sizeSelector.querySelector(`button[data-size="${availableSizes[0]}"]`);
-                if (defaultButton) {
-                    defaultButton.classList.add('selected');
-                    currentSelectedSize = availableSizes[0];
-                    document.getElementById('quantity').max = product.tamanhos[currentSelectedSize];
-                }
-            } else {
-                sizeSelector.innerHTML = '<p>Produto sem estoque no momento.</p>';
-                document.getElementById('add-to-cart-detail-btn').disabled = true; // Desabilita botão se sem estoque
-            }
-
-            // Resetar quantidade para 1
-            let currentQuantity = 1; // Variável local para quantidade nesta função
-            document.getElementById('quantity').value = currentQuantity;
-
-
-            // Adicionar event listeners para os botões de quantidade
-            const qtyInput = document.getElementById('quantity');
-            document.getElementById('qty-minus').onclick = function () {
-                currentQuantity = Math.max(1, currentQuantity - 1);
-                qtyInput.value = currentQuantity;
-            };
-            document.getElementById('qty-plus').onclick = function () {
-                const maxQty = parseInt(qtyInput.max);
-                currentQuantity = Math.min(maxQty, currentQuantity + 1); // Não excede o estoque
-                qtyInput.value = currentQuantity;
-            };
-            qtyInput.onchange = function () { // Lida com digitação manual
-                let val = parseInt(this.value);
-                const maxQty = parseInt(this.max);
-                if (isNaN(val) || val < 1) val = 1;
-                if (val > maxQty) val = maxQty;
-                this.value = val;
-                currentQuantity = val;
-            };
-
-
-            // Armazenar o produto atual para o botão "Adicionar ao carrinho"
-            const addToCartBtn = document.getElementById('add-to-cart-detail-btn');
-            addToCartBtn.dataset.productId = productId;
-            addToCartBtn.onclick = function () {
-                const productToAdd = allProducts.find(p => p.id === parseInt(this.dataset.productId));
-                addToCart(productToAdd, currentSelectedSize, currentQuantity);
-            };
-
-            showSection(productDetailPage);
-
-            // Popula produtos relacionados (simples, pegando 2 primeiros diferentes aleatoriamente)
-            const relatedProductsGrid = document.getElementById('related-products-grid');
-            relatedProductsGrid.innerHTML = '';
-            const shuffledProducts = [...allProducts].sort(() => 0.5 - Math.random()); // Embaralha
-            const related = shuffledProducts.filter(p => p.id !== productId).slice(0, 2); // Pega 2 diferentes
-
-            if (related.length > 0) {
-                related.forEach(p => {
-                    const relatedImageUrl = `imagens/camisa_${p.id}.png`;
-                    relatedProductsGrid.innerHTML += `
-                        <div class="product-card">
-                            <img src="${relatedImageUrl}" alt="${p.nome}" class="product-card-image" onerror="this.onerror=null;this.src='imagens/placeholder_300x250.png';">
-                            <h3>${p.nome}</h3>
-                            <p class="team-name">R$ ${p.preco.toFixed(2).replace('.', ',')}</p>
-                            <p class="price">Tamanhos: ${Object.keys(p.tamanhos).join(', ')}</p>
-                            <a href="#" class="btn view-details-btn" data-product-id="${p.id}">Detalhes</a>
-                        </div>
-                    `;
-                });
-                // Adicionar event listeners aos botões de detalhes dos produtos relacionados
-                document.querySelectorAll('#related-products-grid .view-details-btn').forEach(btn => {
-                    btn.addEventListener('click', (event) => {
-                        event.preventDefault(); // Impede o salto da âncora
-                        const id = parseInt(event.target.dataset.productId);
-                        showProductDetailPage(id);
-                    });
-                });
-            } else {
-                relatedProductsGrid.innerHTML = '<p style="text-align: center; width: 100%;">Nenhum produto relacionado encontrado.</p>';
-            }
-        }
-
-
-        // --- Funções de busca e renderização de produtos ---
-        async function fetchProducts() {
-            try {
-                const response = await fetch(`${API_BASE_URL}/produtos`);
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                const products = await response.json();
-                allProducts = products; // Salva todos os produtos globalmente
-
-                console.log("Produtos do backend:", allProducts);
-
-                // Renderiza os produtos na seção "Todas as camisetas"
-                renderAllProducts(allProducts);
-
-                // Renderiza 4 produtos na seção "Camisas em Destaque"
-                renderFeaturedProducts(allProducts.slice(0, 4));
-
-            } catch (error) {
-                console.error("Erro ao buscar produtos:", error);
-                // Opcional: Mostrar uma mensagem de erro na interface para o usuário
-                const allProductsGrid = document.getElementById('all-products-grid');
-                if (allProductsGrid) {
-                    allProductsGrid.innerHTML = '<p style="text-align: center; width: 100%;">Erro ao carregar produtos. Tente novamente mais tarde.</p>';
-                }
-            }
-        }
-
-        // Função para renderizar produtos em uma grade específica
-        function renderProductGrid(targetGridElement, productsToRender) {
-            if (!targetGridElement) return;
-            targetGridElement.innerHTML = ''; // Limpa o conteúdo existente
-
-            if (productsToRender.length === 0) {
-                targetGridElement.innerHTML = '<p style="text-align: center; width: 100%;">Nenhum produto encontrado.</p>';
-                return;
-            }
-
-            productsToRender.forEach(product => {
-                const imageUrl = `imagens/camisa_${product.id}.png`; // Nome da imagem baseado no ID
-                const teamNameMatch = product.nome.match(/Camisa\s([^\s]+)/i); // Extrai o nome do time
-                const teamName = teamNameMatch ? teamNameMatch[1] : 'Time';
-
-                const productCardHTML = `
-                    <div class="product-card">
-                        <img src="${imageUrl}" alt="${product.nome}" class="product-card-image" onerror="this.onerror=null;this.src='imagens/placeholder_300x250.png';">
-                        <h3>${product.nome}</h3>
-                        <p class="team-name">${teamName}</p>
-                        <p class="price">R$ ${product.preco.toFixed(2).replace('.', ',')}</p>
-                        <p class="available-sizes">Disponível: ${Object.keys(product.tamanhos).filter(s => product.tamanhos[s] > 0).join(', ') || 'N/A'}</p>
-                        <a href="#" class="btn view-details-btn" data-product-id="${product.id}">Detalhes</a>
-                    </div>
-                `;
-                targetGridElement.innerHTML += productCardHTML;
-            });
-
-            // Adicionar event listeners aos botões de detalhes gerados dinamicamente
-            targetGridElement.querySelectorAll('.view-details-btn').forEach(btn => {
-                btn.addEventListener('click', (event) => {
-                    event.preventDefault();
-                    const id = parseInt(event.target.dataset.productId);
-                    showProductDetailPage(id);
-                });
-            });
-        }
-
-        // Renderiza produtos na seção "Todas as camisetas"
-        function renderAllProducts(products) {
-            const allProductsGrid = document.getElementById('all-products-grid');
-            renderProductGrid(allProductsGrid, products);
-        }
-
-        // Renderiza produtos na seção "Camisas em Destaque"
-        function renderFeaturedProducts(products) {
-            const featuredProductsGrid = document.getElementById('featured-products-grid');
-            renderProductGrid(featuredProductsGrid, products);
-        }
-
-        // --- Lógica dos Filtros e Ordenação ---
-        const teamFilter = document.getElementById('team-filter');
-        const priceRangeInput = document.getElementById('price-range');
-        const priceValueSpan = document.getElementById('price-value');
-        const popularityFilter = document.getElementById('popularity-filter'); // Agora para ordenação
-        const availabilityFilter = document.getElementById('availability-filter');
-
-        function applyFilters() {
-            let productsToFilter = [...allProducts]; // Copia a lista original de produtos
-
-            // 1. Filtrar por Time
-            const selectedTeam = teamFilter.value;
-            if (selectedTeam) {
-                productsToFilter = productsToFilter.filter(product =>
-                    product.nome.toLowerCase().includes(selectedTeam.toLowerCase())
-                );
-            }
-
-            // 2. Filtrar por Preço Máximo
-            const maxPrice = parseFloat(priceRangeInput.value);
-            productsToFilter = productsToFilter.filter(product => product.preco <= maxPrice);
-
-            // 3. Filtrar por Disponibilidade
-            const selectedAvailability = availabilityFilter.value;
-            if (selectedAvailability === 'in-stock') {
-                productsToFilter = productsToFilter.filter(product =>
-                    Object.values(product.tamanhos).some(qty => qty > 0)
-                );
-            } else if (selectedAvailability === 'out-of-stock') {
-                productsToFilter = productsToFilter.filter(product =>
-                    Object.values(product.tamanhos).every(qty => qty === 0)
-                );
-            }
-
-            // 4. Ordenar
-            const sortOption = popularityFilter.value;
-            if (sortOption === 'low-to-high') {
-                productsToFilter.sort((a, b) => a.preco - b.preco);
-            } else if (sortOption === 'high-to-low') {
-                productsToFilter.sort((a, b) => b.preco - a.preco);
-            }
-            // Para 'default', 'most-popular', 'new-arrivals', a ordem permanece como a API retorna ou precisa de mais lógica.
-
-            // Renderiza os produtos filtrados e ordenados
-            renderAllProducts(productsToFilter);
-        }
-
-        // Adiciona event listeners para os filtros
-        if (teamFilter) teamFilter.addEventListener('change', applyFilters);
-        if (priceRangeInput) {
-            priceRangeInput.addEventListener('input', () => {
-                priceValueSpan.textContent = parseFloat(priceRangeInput.value).toFixed(2).replace('.', ',');
-            });
-            priceRangeInput.addEventListener('change', applyFilters);
-        }
-        if (popularityFilter) popularityFilter.addEventListener('change', applyFilters);
-        if (availabilityFilter) availabilityFilter.addEventListener('change', applyFilters);
-
-
-        // --- Lógica do Carrinho ---
-        function addToCart(product, size, quantity) {
-            if (!size) {
-                alert("Por favor, selecione um tamanho para adicionar ao carrinho.");
-                return;
-            }
-            if (quantity <= 0) {
-                alert("A quantidade deve ser maior que zero.");
-                return;
-            }
-            if (product.tamanhos[size] < quantity) {
-                alert(`Estoque insuficiente para o tamanho ${size}. Disponível: ${product.tamanhos[size]} un.`);
-                return;
-            }
-
-            const existingItemIndex = cart.findIndex(item => item.id === product.id && item.size === size);
-
-            if (existingItemIndex > -1) {
-                // Item já existe, apenas atualiza a quantidade
-                const newQty = cart[existingItemIndex].quantity + quantity;
-                if (product.tamanhos[size] < newQty) { // Verifica estoque para a nova quantidade total
-                    alert(`Não é possível adicionar mais. Limite de estoque para o tamanho ${size}: ${product.tamanhos[size]} un.`);
-                    return;
-                }
-                cart[existingItemIndex].quantity = newQty;
-
-            } else {
-                // Adiciona novo item ao carrinho
-                cart.push({
-                    id: product.id,
-                    name: product.nome,
-                    price: product.preco,
-                    size: size,
-                    quantity: quantity,
-                    imageUrl: `imagens/camisa_${product.id}.png` // Imagem para o carrinho
-                });
-            }
-            console.log("Carrinho atualizado:", cart);
-            alert(`${quantity}x ${product.nome} (Tamanho: ${size}) adicionado ao carrinho!`);
-            renderCart(); // Renderiza o carrinho para refletir as mudanças
-        }
-
-        function removeFromCart(productId, size) {
-            cart = cart.filter(item => !(item.id === productId && item.size === size));
-            renderCart();
-            // alert("Item removido do carrinho."); // Remover se renderCart já for auto-explicativo
-        }
-
-        function updateCartQuantity(productId, size, newQuantity) {
-            const item = cart.find(item => item.id === productId && item.size === size);
-            if (item) {
-                const productInAllProducts = allProducts.find(p => p.id === productId);
-                if (newQuantity > productInAllProducts.tamanhos[size]) {
-                    alert(`Quantidade máxima para o tamanho ${size} é ${productInAllProducts.tamanhos[size]} un.`);
-                    newQuantity = productInAllProducts.tamanhos[size]; // Limita à quantidade máxima
-                }
-                if (newQuantity <= 0) {
-                    removeFromCart(productId, size);
-                } else {
-                    item.quantity = newQuantity;
-                    renderCart();
-                }
-            }
-        }
-
-        function renderCart() {
-            const cartItemsContainer = document.getElementById('cart-items-container');
-            const cartTotalSpan = document.getElementById('cart-total');
-            const emptyCartMessage = document.getElementById('empty-cart-message');
-
-            cartItemsContainer.innerHTML = ''; // Limpa conteúdo anterior
-
-            let total = 0;
-
-            if (cart.length === 0) {
-                emptyCartMessage.style.display = 'block';
-                cartItemsContainer.appendChild(emptyCartMessage);
-            } else {
-                emptyCartMessage.style.display = 'none';
-                cart.forEach(item => {
-                    total += item.price * item.quantity;
-                    const cartItemHTML = `
-                        <div class="cart-item" data-product-id="${item.id}" data-product-size="${item.size}">
-                            <img src="${item.imageUrl}" alt="${item.name}" class="cart-item-image" onerror="this.onerror=null;this.src='imagens/placeholder_100x100.png';">
-                            <div class="cart-item-details">
-                                <h4>${item.name} (${item.size})</h4>
-                                <p class="price">R$ ${(item.price * item.quantity).toFixed(2).replace('.', ',')}</p>
-                            </div>
-                            <div class="cart-item-quantity">
-                                <button class="qty-minus-cart">-</button>
-                                <input type="number" value="${item.quantity}" min="1" max="99" class="item-quantity-input" data-product-id="${item.id}" data-product-size="${item.size}">
-                                <button class="qty-plus-cart">+</button>
-                            </div>
-                            <button class="remove-item-btn">&times;</button>
-                        </div>
-                    `;
-                    cartItemsContainer.innerHTML += cartItemHTML;
-                });
-            }
-
-            cartTotalSpan.innerText = total.toFixed(2).replace('.', ',');
-
-            // Adicionar event listeners aos botões de quantidade e remover do carrinho
-            document.querySelectorAll('#cart-items-container .qty-minus-cart').forEach(button => {
-                button.addEventListener('click', function () {
-                    const cartItemDiv = this.closest('.cart-item');
-                    const productId = parseInt(cartItemDiv.dataset.productId);
-                    const productSize = cartItemDiv.dataset.productSize;
-                    const input = this.nextElementSibling;
-                    let newQuantity = parseInt(input.value) - 1;
-                    updateCartQuantity(productId, productSize, newQuantity);
-                });
-            });
-
-            document.querySelectorAll('#cart-items-container .qty-plus-cart').forEach(button => {
-                button.addEventListener('click', function () {
-                    const cartItemDiv = this.closest('.cart-item');
-                    const productId = parseInt(cartItemDiv.dataset.productId);
-                    const productSize = cartItemDiv.dataset.productSize;
-                    const input = this.previousElementSibling;
-                    let newQuantity = parseInt(input.value) + 1;
-                    updateCartQuantity(productId, productSize, newQuantity);
-                });
-            });
-
-            document.querySelectorAll('#cart-items-container .item-quantity-input').forEach(input => {
-                input.addEventListener('change', function () {
-                    const cartItemDiv = this.closest('.cart-item');
-                    const productId = parseInt(cartItemDiv.dataset.productId);
-                    const productSize = cartItemDiv.dataset.productSize;
-                    let newQuantity = parseInt(this.value);
-                    if (isNaN(newQuantity) || newQuantity < 1) newQuantity = 1;
-                    updateCartQuantity(productId, productSize, newQuantity);
-                });
-            });
-
-            document.querySelectorAll('#cart-items-container .remove-item-btn').forEach(button => {
-                button.addEventListener('click', function () {
-                    const cartItemDiv = this.closest('.cart-item');
-                    const productId = parseInt(cartItemDiv.dataset.productId);
-                    const productSize = cartItemDiv.dataset.product - size; // Correção aqui: data-product-size
-                    removeFromCart(productId, productSize);
-                });
-            });
-        }
-
-
-        // --- Event Listeners para Navegação ---
-        document.getElementById('continue-shopping-btn').addEventListener('click', function (event) {
-            event.preventDefault();
-            showProductsListingPage(); // Volta para a página de listagem de produtos
-        });
-
-        document.querySelectorAll('.nav-list a').forEach(link => {
-            link.addEventListener('click', function (event) {
-                const targetId = this.getAttribute('href').substring(1); // Remove o '#'
-                if (targetId === 'home') {
-                    event.preventDefault();
-                    showHomePage();
-                } else if (targetId === 'products') {
-                    event.preventDefault();
-                    showProductsListingPage();
-                } else if (targetId === 'cart') {
-                    event.preventDefault();
-                    showCartListingPage();
-                } else {
-                    // Para outros links como #teams, #login, apenas esconde tudo e não faz nada
-                    // Você pode adicionar a lógica para eles depois
-                    hideAllSections();
-                    const targetSection = document.getElementById(targetId);
-                    if (targetSection) {
-                        // Default to block for other pages
-                        targetSection.style.display = 'block';
-                    }
-                    window.scrollTo(0, 0);
-                }
-            });
-        });
-
-        // --- Inicialização ---
-        // Carregar produtos quando a página for carregada
-        document.addEventListener('DOMContentLoaded', () => {
-            fetchProducts();
-            showHomePage(); // Garante que a home é a primeira a ser mostrada ao carregar
-        });
-    </script>
+    <!-- Link para o arquivo JavaScript externo -->
+    <script src="script.js"></script>
 </body>
 
 </html>
