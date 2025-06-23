@@ -111,8 +111,11 @@ def cadastrar_usuario_interativo():
 def login_usuario_interativo():
     email = input("Insira seu email: ")
     senha = input("Insira sua senha: ")
-    if verificar_login(email, senha):
-        print("Login bem-sucedido!")
+    usuario = login_user(email, senha)
+
+    if usuario:
+        usuario_id, nome, tipo = usuario
+        print(f"Login bem-sucedido! Bem-vindo(a), {nome} ({tipo})")
     else:
         print("Usuário ou senha inválidos!")
 
@@ -176,3 +179,10 @@ def deletar_usuario_interativo():
     id_ou_email = input("Insira o ID ou email do usuário que deseja excluir: ")
     sucesso, mensagem = deletar_usuario(id_ou_email)
     print(mensagem)
+
+def login_user(email, senha):
+    sql = "SELECT id, nome, tipo FROM usuarios WHERE email = ? AND senha = ?"
+    resultado = consultar(sql, (email, senha))
+    if resultado:
+        return resultado[0]  # retorna (id, nome, tipo)
+    return None

@@ -3,30 +3,83 @@ from usuarios import *
 from vendas import *
 from estoque import * 
 
-def menu():
+def main():
     while True:
-        print("""\n===== FUTCAMISAS =====
-1 - Usuários
-2 - Estoque
-3 - Vendas
-4 - Produtos
-0 - Sair""")
-
+        print("\n==== FUTCAMISAS ====")
+        print("1 - Login")
+        print("2 - Cadastrar usuário")
+        print("0 - Sair")
         opcao = input("Escolha uma opção: ")
 
         if opcao == "1":
-            menu_users()
+            email = input("Email: ").strip()
+            senha = input("Senha: ").strip()
+            usuario = login_user(email, senha)
+            if usuario:
+                usuario_id, nome, tipo = usuario
+                print(f"\nBem-vindo(a), {nome}!")
+                if tipo == "cliente":
+                    menu_cliente(usuario)
+                elif tipo == "funcionario":
+                    menu_funcionario()
+                else:
+                    print("Tipo de usuário inválido.")
+            else:
+                print("Login inválido.")
         elif opcao == "2":
-            menu_estoque()
-        elif opcao == "3":
-            menu_vendas()
-        elif opcao == "4":
-            menu_produtos()
+            cadastrar_usuario_interativo()
         elif opcao == "0":
-            print("Programa finalizado com sucesso! ")
+            print("Encerrando...")
             break
         else:
-            print("Opção inválida, tente novamente! ")
+            print("Opção inválida.")
+
+
+def menu_funcionario():
+    while True:
+        print("\n=== MENU FUNCIONÁRIO ===")
+        print("1 - Adicionar produto")
+        print("2 - Editar produto")
+        print("3 - Excluir produto")
+        print("4 - Adicionar quantidade ao estoque")
+        print("5 - Listar produtos")
+        print("6 - Listar todas as vendas")
+        print("0 - Sair")
+        opcao = input("Escolha uma opção: ")
+
+        if opcao == "1":
+            adicionar_produto_interativo()
+        elif opcao == "2":
+            editar_produto_interativo()
+        elif opcao == "3":
+            excluir_produto_interativo()
+        elif opcao == "4":
+            adicionar_quantidade_produto()
+        elif opcao == "5":
+            listar_produtos()
+        elif opcao == "6":
+            listar_vendas_interativo()
+        elif opcao == "0":
+            break
+        else:
+            print("Opção inválida.")
+
+def menu_cliente(usuario):
+    while True:
+        print("\n--- MENU CLIENTE ---")
+        print("1 - Comprar produtos")
+        print("2 - Ver minhas compras")
+        print("0 - Sair")
+        opcao = input("Escolha uma opção: ")
+
+        if opcao == "1":
+            realizar_venda_interativo(usuario)  # ou passar usuario_id, dependendo da sua função
+        elif opcao == "2":
+            listar_compras_usuario_interativo(usuario)  # já pede o login dentro, ou modifique para usar usuario_id direto
+        elif opcao == "0":
+            break
+        else:
+            print("Opção inválida.")
 
 def menu_users():
     while True:
@@ -94,28 +147,6 @@ def menu_produtos():
         else:
             print("Opção inválida, tente novamente!")
 
-def menu_vendas():
-    while True:
-        print("""\n===== MENU DE VENDAS =====
-1 - Realizar compra
-2 - Listar vendas
-3 - Listar compras do usuário
-0 - Sair""")
-
-        opcao = input("Escolha uma opção: ")
-
-        if opcao == "1":
-            realizar_venda_interativo()
-        elif opcao == "2":
-            listar_vendas_interativo()
-        elif opcao == "3":
-            listar_compras_usuario_interativo()
-        elif opcao == "0":
-            print("Saindo...")
-            break
-        else:
-            print("Opção inválida, tente novamente!")
-
 def menu_estoque():
     while True:
         print("""===== MENU DO ESTOQUE =====
@@ -140,4 +171,4 @@ def menu_estoque():
         
         
 if __name__ == "__main__":
-    menu()
+    main()

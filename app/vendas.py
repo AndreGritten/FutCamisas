@@ -89,16 +89,9 @@ def listar_todas_vendas():
 
 # --- Funções interativas (inputs/prints que chamam as funções acima) ---
 
-def realizar_venda_interativo():
-    email = input("Digite seu email: ").strip()
-    senha = input("Digite sua senha: ").strip()
-
-    usuario = validar_login(email, senha)
-    if not usuario:
-        print("Login inválido.")
-        return
-    usuario_id, nome = usuario
-    print(f"Bem-vindo, {nome}!")
+def realizar_venda_interativo(usuario):
+    usuario_id, nome = usuario[:2]
+    print(f"\nBem-vindo à compra, {nome}!")
 
     carrinho = []
 
@@ -205,13 +198,7 @@ def listar_vendas_interativo():
         print('-'*50)
 
 
-def listar_compras_usuario_interativo():
-    email = input("Digite seu email: ").strip()
-    senha = input("Digite sua senha: ").strip()
-    usuario = validar_login(email, senha)
-    if not usuario:
-        print("Login inválido. Verifique email e senha.")
-        return
-    usuario_id, nome = usuario
-    print(f"\nBem-vindo(a), {nome}!")
+def listar_compras_usuario_interativo(usuario):
+    usuario_id, nome = usuario[:2]
+    print(f"\nHistórico de compras de {nome}:")
     buscar_historico_vendas_interativo(usuario_id)
