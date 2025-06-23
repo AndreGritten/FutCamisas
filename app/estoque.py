@@ -1,52 +1,60 @@
-from produtos import *
+import json
+from .produtos import listar_produtos 
+from .bancoDeDados.conexao import executar_comando, consultar
+
 def adicionar_quantidade_produto():
+   
     while True:
         listar_produtos()
         try:
-            id_produto = input("Informe o ID do produto para adicionar quantidade (ou Enter para sair): ").strip()
-            if id_produto == "":
-                break  # Sai da função se o usuário apertar Enter sem digitar
-            id_produto = int(id_produto)
+            id_produto_input = input("Informe o ID do produto para adicionar quantidade (ou Enter para sair): ").strip()
+            if id_produto_input == "":
+                break
+            id_produto = int(id_produto_input)
         except ValueError:
-            print("ID inválido.")
+            print("ID inválido. Digite um número válido.")
             continue
 
-        sql_buscar = "SELECT tamanhos FROM produtos WHERE id = ?"
-        resultado = consultar(sql_buscar, (id_produto,))
+        sql_buscar_tamanhos = "SELECT tamanhos FROM produtos WHERE id = ?"
+        resultado_tamanhos = consultar(sql_buscar_tamanhos, (id_produto,))
 
-        if not resultado:
+        if not resultado_tamanhos:
             print(f"Produto com ID {id_produto} não encontrado.")
             continue
 
-        tamanhos_list = json.loads(resultado[0][0])
+        tamanhos_disponiveis = json.loads(resultado_tamanhos[0][0])
+        print(f"Tamanhos disponíveis para este produto: {', '.join(tamanhos_disponiveis)}")
 
         while True:
-            tamanho = input("Informe o tamanho que deseja adicionar (ex.: P, M, G) (ou Enter para mudar de produto): ").upper().strip()
+            tamanho = input("Informe o tamanho que deseja adicionar (ex.: P, M, G) (ou Enter para voltar para escolha de produto): ").upper().strip()
             if tamanho == "":
-                break  # Sai para escolher outro produto
+                break
 
-            if tamanho not in tamanhos_list:
-                print(f"O tamanho {tamanho} não está cadastrado para este produto.")
+            if tamanho not in tamanhos_disponiveis:
+                print(f"O tamanho '{tamanho}' não está cadastrado para este produto. Por favor, escolha um dos disponíveis.")
                 continue
 
             try:
                 quantidade_adicional = int(input(f"Quantidade que deseja adicionar no tamanho {tamanho}: "))
+                if quantidade_adicional <= 0:
+                    print("Quantidade deve ser um número positivo.")
+                    continue
             except ValueError:
-                print("Quantidade inválida.")
+                print("Quantidade inválida. Informe um número inteiro.")
                 continue
 
-            resultado_estoque = consultar(
-                "SELECT quantidade FROM estoque WHERE produto_id = ? AND tamanho = ?",
-                (id_produto, tamanho)
-            )
+            sql_buscar_estoque = "SELECT quantidade FROM estoque WHERE produto_id = ? AND tamanho = ?"
+            resultado_estoque = consultar(sql_buscar_estoque, (id_produto, tamanho))
 
             if resultado_estoque:
+               
                 nova_quantidade = resultado_estoque[0][0] + quantidade_adicional
                 executar_comando(
                     "UPDATE estoque SET quantidade = ? WHERE produto_id = ? AND tamanho = ?",
                     (nova_quantidade, id_produto, tamanho)
                 )
             else:
+                
                 executar_comando(
                     "INSERT INTO estoque (produto_id, tamanho, quantidade) VALUES (?, ?, ?)",
                     (id_produto, tamanho, quantidade_adicional)
@@ -54,11 +62,15 @@ def adicionar_quantidade_produto():
 
             print(f"Quantidade adicionada com sucesso no produto ID {id_produto}, tamanho {tamanho}.")
 
-        # Depois de sair do loop de tamanhos, pergunta se quer continuar com outro produto
+            continuar_tamanho = input("Adicionar mais quantidade a outro tamanho deste produto? (S/N): ").strip().upper()
+            if continuar_tamanho != "S":
+                break
+
         continuar_produto = input("Deseja adicionar quantidade em outro produto? (S/N): ").strip().upper()
         if continuar_produto != "S":
             break
 
 
 def check_product_in_stock():
-    listar_produtos()
+   
+    listar_produtos() 
