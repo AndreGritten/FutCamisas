@@ -5,22 +5,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FutCamisas - Sua Loja de Futebol</title>
-    <!-- Link para o arquivo CSS externo -->
-    <link rel="stylesheet" href="style.css">
-    <!-- Font Awesome para ícones -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
     <header class="main-header">
         <div class="container navbar">
-            <a href="#" class="logo">
+            <a href="#home" class="logo">
                 <img src="imagens/logo.png" alt="FutCamisas Logo">
                 FutCamisas
             </a>
-            <div class="menu-toggle" id="mobile-menu">
+            <div class="menu-toggle" id="mobile-menu" role="button" aria-label="Abrir menu de navegação">
                 <span></span>
                 <span></span>
                 <span></span>
@@ -31,9 +29,9 @@
                     <li id="nav-products-link"><a href="#products">Camisetas</a></li>
                     <li id="nav-teams-link"><a href="#teams">Times</a></li>
                     <li id="nav-cart-link">
-                        <a href="#cart" class="cart-icon-container">
+                        <a href="#cart" class="cart-icon-container" aria-label="Ver Carrinho">
                             <i class="fas fa-shopping-cart"></i>
-                            <span class="cart-count" id="cart-item-count">0</span>
+                            <span class="cart-count" id="cart-item-count" aria-live="polite" aria-atomic="true">0</span>
                         </a>
                     </li>
                     <li id="nav-profile-link" style="display: none;"><a href="#profile">Meu Perfil</a></li>
@@ -46,110 +44,107 @@
     </header>
 
     <main>
-        <!-- Seção 1: Tela de Login / Cadastro (Inicialmente Visível, as outras ocultas por padrão no JS) -->
-        <section id="login-register-page" class="auth-form-container">
+        <section id="login-register-page" class="auth-form-container" role="region" aria-labelledby="login-heading">
             <div class="auth-form">
-                <h2>Login</h2>
-                <div id="login-message" class="message-box"></div>
-                <form id="login-form">
+                <h2 id="login-heading">Login</h2>
+                <div id="login-message" class="message-box" role="alert" aria-live="polite"></div>
+                <form id="login-form" aria-label="Formulário de Login">
                     <div class="input-group">
                         <label for="login-email">Email:</label>
-                        <input type="email" id="login-email" required>
+                        <input type="email" id="login-email" name="loginEmail" autocomplete="username" required
+                            aria-required="true">
                     </div>
                     <div class="input-group">
                         <label for="login-password">Senha:</label>
-                        <input type="password" id="login-password" required>
+                        <input type="password" id="login-password" name="loginPassword" autocomplete="current-password"
+                            required aria-required="true">
                     </div>
                     <button type="submit" class="btn">Entrar</button>
                 </form>
-                <button id="show-register-modal" class="link-button">Não tenho conta</button>
+                <button id="show-register-modal" class="link-button" aria-controls="register-modal">Não tenho
+                    conta</button>
             </div>
         </section>
 
-        <!-- Modal de Cadastro (Inicialmente Oculto) -->
-        <div id="register-modal" class="modal">
+        <div id="register-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="register-heading">
             <div class="modal-content">
-                <span class="close-button" id="close-register-modal">&times;</span>
-                <h2>Cadastro</h2>
-                <div id="register-message" class="message-box"></div>
-                <form id="register-form">
+                <span class="close-button" id="close-register-modal" role="button"
+                    aria-label="Fechar Modal de Cadastro">&times;</span>
+                <h2 id="register-heading">Cadastro</h2>
+                <div id="register-message" class="message-box" role="alert" aria-live="polite"></div>
+                <form id="register-form" aria-label="Formulário de Cadastro">
                     <div class="input-group">
                         <label for="register-name">Nome:</label>
-                        <input type="text" id="register-name" required>
+                        <input type="text" id="register-name" name="registerName" required aria-required="true">
                     </div>
                     <div class="input-group">
                         <label for="register-cpf">CPF:</label>
-                        <input type="text" id="register-cpf" required maxlength="11" pattern="\d{11}"
-                            title="CPF deve conter 11 dígitos numéricos">
+                        <input type="text" id="register-cpf" name="registerCpf" required maxlength="11" pattern="\d{11}"
+                            title="CPF deve conter 11 dígitos numéricos" aria-required="true"
+                            aria-describedby="cpf-hint">
+                        <p id="cpf-hint" class="input-hint">Apenas números, 11 dígitos.</p>
                     </div>
                     <div class="input-group">
                         <label for="register-email">Email:</label>
-                        <input type="email" id="register-email" required>
+                        <input type="email" id="register-email" name="registerEmail" required aria-required="true">
                     </div>
                     <div class="input-group">
                         <label for="register-password">Senha:</label>
-                        <input type="password" id="register-password" required>
+                        <input type="password" id="register-password" name="registerPassword" required
+                            aria-required="true" autocomplete="new-password">
                     </div>
                     <div class="input-group">
                         <label for="register-confirm-password">Confirmar Senha:</label>
-                        <input type="password" id="register-confirm-password" required>
+                        <input type="password" id="register-confirm-password" name="registerConfirmPassword" required
+                            aria-required="true" autocomplete="new-password">
                     </div>
                     <button type="submit" class="btn">Cadastrar</button>
                 </form>
             </div>
         </div>
 
-        <!-- Seção 2: Página Home/Catálogo de Produtos (Oculta por padrão no CSS/JS) -->
-        <section id="home-products-section">
+        <section id="home-products-section" style="display: none;" role="region" aria-labelledby="main-catalog-heading">
             <section id="home" class="hero">
-                <h1>Impressione seu time: Camisas Oficiais de Futebol</h1>
+                <h1 id="main-catalog-heading">Impressione seu time: Camisas Oficiais de Futebol</h1>
                 <p>Explore os mais recentes e icônicos modelos de camisas de futebol dos seus times favoritos. Qualidade
                     incomparável e design autêntico</p>
                 <a href="#products" class="btn" id="shop-now-btn">Shop Now</a>
             </section>
 
-            <section id="featured-products" class="py-4">
+            <section id="featured-products" class="py-4" role="region" aria-labelledby="featured-heading">
                 <div class="container">
-                    <h2>Camisas em Destaque</h2>
+                    <h2 id="featured-heading">Camisas em Destaque</h2>
                     <div class="product-grid" id="featured-products-grid">
-                        <!-- Os cards de produtos em destaque serão inseridos aqui pelo JavaScript -->
-                        <div class="spinner"></div> <!-- Placeholder de carregamento -->
+                        <div class="spinner" aria-label="Carregando produtos em destaque"></div>
                     </div>
                 </div>
             </section>
 
-            <section id="products" class="py-4">
+            <section id="products" class="py-4" role="region" aria-labelledby="all-products-heading">
                 <div class="container products-page">
-                    <div class="sidebar">
-                        <h3>Filtre camisas</h3>
+                    <div class="sidebar" role="complementary" aria-labelledby="filter-heading">
+                        <h3 id="filter-heading">Filtre camisas</h3>
                         <div class="filter-group">
                             <label for="team-filter">Por time</label>
-                            <select id="team-filter">
+                            <select id="team-filter" aria-label="Filtro por time">
                                 <option value="">Todos os times</option>
-                                <option value="Flamengo">Flamengo</option>
-                                <option value="Palmeiras">Palmeiras</option>
-                                <option value="Corinthians">Corinthians</option>
-                                <option value="São Paulo">São Paulo</option>
-                                <option value="Vasco">Vasco</option>
-                                <option value="Grêmio">Grêmio</option>
-                                <option value="Internacional">Internacional</option>
-                                <option value="Cruzeiro">Cruzeiro</option>
-                                <option value="Atlético-MG">Atlético-MG</option>
-                                <option value="Santos">Santos</option>
                             </select>
                         </div>
                         <div class="filter-group">
                             <label for="search-input">Buscar por nome</label>
-                            <input type="text" id="search-input" placeholder="Ex: Flamengo 2024">
+                            <input type="text" id="search-input" placeholder="Ex: Flamengo 2024"
+                                aria-label="Buscar produtos por nome">
                         </div>
                         <div class="filter-group">
                             <label for="price-range">Por preço</label>
-                            <input type="range" id="price-range" min="0" max="500" value="500"> <!-- Aumentei o max -->
-                            <p class="price-range-display">Preço Máximo: R$ <span id="price-value">500.00</span></p>
+                            <input type="range" id="price-range" min="0" max="500" value="500"
+                                aria-label="Filtro de preço máximo">
+                            <p class="price-range-display">Preço Máximo: R$ <span id="price-value"
+                                    aria-live="polite">500.00</span></p>
                         </div>
                         <div class="filter-group">
                             <label for="popularity-filter">Ordenar</label>
-                            <select id="popularity-filter">
+                            <select id="popularity-filter" aria-label="Ordenar produtos por">
                                 <option value="default">Padrão</option>
                                 <option value="low-to-high">Preço: Baixo para Alto</option>
                                 <option value="high-to-low">Preço: Alto para Baixo</option>
@@ -157,210 +152,213 @@
                         </div>
                         <div class="filter-group">
                             <label for="availability-filter">Por disponibilidade</label>
-                            <select id="availability-filter">
+                            <select id="availability-filter" aria-label="Filtrar por disponibilidade">
                                 <option value="all">Todos</option>
                                 <option value="in-stock">No estoque</option>
                                 <option value="out-of-stock">Fora de estoque</option>
                             </select>
                         </div>
                         <div class="filter-group">
-                            <button id="clear-filters-btn">Limpar Filtros</button>
+                            <button class="btn" id="clear-filters-btn">Limpar Filtros</button>
                         </div>
                     </div>
                     <div class="main-content">
-                        <h2>Todas as camisetas</h2>
-                        <div class="product-grid" id="all-products-grid">
-                            <!-- Os cards de produtos do backend serão inseridos aqui pelo JavaScript -->
-                            <div class="spinner"></div> <!-- Placeholder de carregamento -->
+                        <h2 id="all-products-heading">Todas as camisetas</h2>
+                        <div class="product-grid" id="all-products-grid" role="grid">
+                            <div class="spinner" aria-label="Carregando todas as camisetas"></div>
                         </div>
                     </div>
                 </div>
             </section>
         </section>
 
-        <!-- Seção 3: Página de Detalhes do Produto (Oculta por padrão no CSS/JS) -->
-        <section id="product-detail-page" class="py-4">
-            <div class="container product-detail-container">
+        <div id="product-detail-modal" class="modal" role="dialog" aria-modal="true"
+            aria-labelledby="detail-product-name">
+            <div class="modal-content product-detail-container">
+                <span class="close-button" id="close-product-detail-modal" role="button"
+                    aria-label="Fechar Detalhes do Produto">&times;</span>
                 <div class="product-images">
-                    <img src="imagens/placeholder_detail.png" alt="Detailed Jersey Image" class="main-image"
+                    <img src="imagens/placeholder_detail.png" alt="Imagem Detalhada do Produto" class="main-image"
                         id="detail-product-image">
                 </div>
                 <div class="product-info">
-                    <h1 id="detail-product-name"></h1>
+                    <h2 id="detail-product-name"></h2>
                     <p class="team-name" id="detail-team-name"></p>
                     <p class="price" id="detail-product-price"></p>
                     <p class="description" id="detail-product-description"></p>
 
                     <div class="options-group">
-                        <label>Tamanho:</label>
-                        <div class="size-selector" id="detail-size-selector">
-                            <!-- Botões de tamanho serão inseridos aqui pelo JavaScript -->
+                        <label for="detail-size-selector" id="size-label">Tamanho:</label>
+                        <div class="size-selector" id="detail-size-selector" role="group" aria-labelledby="size-label">
                         </div>
                     </div>
 
                     <div class="options-group">
                         <label for="quantity">Quantidade:</label>
                         <div class="quantity-selector">
-                            <button id="qty-minus">-</button>
-                            <input type="number" id="quantity" value="1" min="1" max="99">
-                            <button id="qty-plus">+</button>
+                            <button id="qty-minus" aria-label="Diminuir quantidade">-</button>
+                            <input type="number" id="quantity" value="1" min="1" max="99"
+                                aria-label="Quantidade do produto">
+                            <button id="qty-plus" aria-label="Aumentar quantidade">+</button>
                         </div>
                     </div>
 
                     <button class="btn add-to-cart-btn" id="add-to-cart-detail-btn">Adicionar ao carrinho</button>
                 </div>
             </div>
-            <div class="container related-products">
-                <h2>Confira também...</h2>
-                <div class="product-grid" id="related-products-grid">
-                    <!-- Produtos relacionados serão inseridos aqui pelo JavaScript -->
-                </div>
-            </div>
-        </section>
+        </div>
 
-        <!-- Seção 4: Página do Carrinho (Oculta por padrão no CSS/JS) -->
-        <section id="cart-page-section" class="cart-page py-4">
+        <section id="cart-page-section" class="cart-page py-4" style="display: none;" role="region"
+            aria-labelledby="cart-heading">
             <div class="container">
-                <h2>Seu carrinho</h2>
+                <h2 id="cart-heading">Seu carrinho</h2>
                 <div class="cart-items" id="cart-items-container">
-                    <!-- Itens do carrinho serão inseridos aqui pelo JavaScript -->
                     <p id="empty-cart-message" style="text-align: center; color: #666; font-size: 1.2rem;">Seu carrinho
                         está vazio.</p>
                 </div>
                 <div class="cart-summary">
-                    <p>Total: R$ <span id="cart-total">0.00</span></p>
+                    <p>Total: R$ <span id="cart-total" aria-live="polite">0.00</span></p>
                     <div class="cart-actions">
                         <a href="#products" class="btn btn-secondary" id="continue-shopping-btn">Continuar comprando</a>
-                        <button class="btn">Finalizar compra</button>
+                        <button class="btn" id="checkout-btn">Finalizar compra</button>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Seção 5: Página de Perfil do Cliente (Oculta por padrão no CSS/JS) -->
-        <section id="profile-page-section" class="profile-container py-4">
+        <section id="profile-page-section" class="profile-container py-4" style="display: none;" role="region"
+            aria-labelledby="profile-heading">
             <div class="profile-form">
-                <h2>Meu Perfil</h2>
-                <div id="profile-message" class="message-box"></div>
-                <form id="profile-form">
+                <h2 id="profile-heading">Meu Perfil</h2>
+                <div id="profile-message" class="message-box" role="alert" aria-live="polite"></div>
+                <form id="profile-form" aria-label="Formulário de Perfil do Usuário">
                     <div class="input-group">
                         <label for="profile-name">Nome:</label>
-                        <input type="text" id="profile-name" required>
+                        <input type="text" id="profile-name" name="profileName" required aria-required="true">
                     </div>
                     <div class="input-group">
                         <label for="profile-cpf">CPF:</label>
-                        <input type="text" id="profile-cpf" disabled> <!-- CPF não editável -->
+                        <input type="text" id="profile-cpf" name="profileCpf" disabled aria-disabled="true">
                     </div>
                     <div class="input-group">
                         <label for="profile-email">Email:</label>
-                        <input type="email" id="profile-email" required>
+                        <input type="email" id="profile-email" name="profileEmail" required aria-required="true">
                     </div>
                     <div class="input-group">
                         <label for="profile-password">Senha Atual:</label>
-                        <input type="password" id="profile-password" required>
+                        <input type="password" id="profile-password" name="profilePassword" required
+                            aria-required="true">
                     </div>
                     <div class="input-group">
                         <label for="profile-new-password">Nova Senha (opcional):</label>
-                        <input type="password" id="profile-new-password">
+                        <input type="password" id="profile-new-password" name="profileNewPassword"
+                            autocomplete="new-password">
                     </div>
                     <div class="input-group">
                         <label for="profile-confirm-new-password">Confirmar Nova Senha:</label>
-                        <input type="password" id="profile-confirm-new-password">
+                        <input type="password" id="profile-confirm-new-password" name="profileConfirmNewPassword"
+                            autocomplete="new-password">
                     </div>
                     <button type="submit" class="btn">Salvar Alterações</button>
                 </form>
             </div>
         </section>
 
-        <!-- Seção 6: Painel de Administração / Funcionário (Oculta por padrão no CSS/JS) -->
-        <section id="admin-dashboard-section" class="admin-dashboard py-4">
+        <section id="admin-dashboard-section" class="admin-dashboard py-4" style="display: none;" role="region"
+            aria-labelledby="admin-heading">
             <div class="container">
-                <h2>Painel de Administração</h2>
-                <div class="menu-grid">
-                    <div class="menu-card" id="manage-users-btn">
-                        <i class="fas fa-users"></i>
+                <h2 id="admin-heading">Painel de Administração</h2>
+                <div class="menu-grid" role="group" aria-label="Menu de Gerenciamento">
+                    <div class="menu-card" id="manage-users-btn" role="button" tabindex="0">
+                        <i class="fas fa-users" aria-hidden="true"></i>
                         <h4>Gerenciar Usuários</h4>
                     </div>
-                    <div class="menu-card" id="manage-products-btn">
-                        <i class="fas fa-tshirt"></i>
+                    <div class="menu-card" id="manage-products-btn" role="button" tabindex="0">
+                        <i class="fas fa-tshirt" aria-hidden="true"></i>
                         <h4>Gerenciar Produtos</h4>
                     </div>
-                    <div class="menu-card" id="manage-sales-btn">
-                        <i class="fas fa-chart-line"></i>
+                    <div class="menu-card" id="manage-sales-btn" role="button" tabindex="0">
+                        <i class="fas fa-chart-line" aria-hidden="true"></i>
                         <h4>Gerenciar Vendas</h4>
                     </div>
-                    <div class="menu-card" id="manage-stock-btn">
-                        <i class="fas fa-boxes"></i>
+                    <div class="menu-card" id="manage-stock-btn" role="button" tabindex="0">
+                        <i class="fas fa-boxes" aria-hidden="true"></i>
                         <h4>Gerenciar Estoque</h4>
+                    </div>
+                    <div class="menu-card" id="view-reports-btn" role="button" tabindex="0">
+                        <i class="fas fa-file-alt" aria-hidden="true"></i>
+                        <h4>Ver Relatórios</h4>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Seção 6.1: Gerenciar Usuários (Oculta por padrão no CSS/JS) -->
-        <section id="admin-manage-users" class="management-section py-4">
+        <section id="admin-manage-users" class="management-section py-4" style="display: none;" role="region"
+            aria-labelledby="manage-users-heading">
             <div class="container">
-                <h2>Gerenciar Usuários</h2>
-                <div id="users-management-message" class="message-box"></div>
+                <h2 id="manage-users-heading">Gerenciar Usuários</h2>
+                <div id="users-management-message" class="message-box" role="alert" aria-live="polite"></div>
                 <div class="actions">
                     <button class="btn" id="add-user-modal-btn">Adicionar Novo Usuário</button>
                     <button class="btn btn-secondary" id="back-to-admin-dashboard-from-users">Voltar</button>
                 </div>
-                <table id="users-table">
+                <table id="users-table" role="table" aria-label="Tabela de Gerenciamento de Usuários">
                     <thead>
                         <tr>
-                            <th>ID</th>
-                            <th>Nome</th>
-                            <th>CPF</th>
-                            <th>Email</th>
-                            <th>Tipo</th>
-                            <th>Ações</th>
+                            <th scope="col">ID</th>
+                            <th scope="col">Nome</th>
+                            <th scope="col">CPF</th>
+                            <th scope="col">Email</th>
+                            <th scope="col">Tipo</th>
+                            <th scope="col">Ações</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <!-- Usuários serão carregados aqui -->
                     </tbody>
                 </table>
             </div>
         </section>
 
-        <!-- Modal para Adicionar/Editar Usuário (Reutiliza modal CSS) -->
-        <div id="user-form-modal" class="modal management-form-modal">
+        <div id="user-form-modal" class="modal management-form-modal" role="dialog" aria-modal="true"
+            aria-labelledby="user-modal-title">
             <div class="modal-content">
-                <span class="close-button" id="close-user-form-modal">&times;</span>
+                <span class="close-button" id="close-user-form-modal" role="button"
+                    aria-label="Fechar Formulário de Usuário">&times;</span>
                 <h2 id="user-modal-title"></h2>
-                <div id="user-form-message" class="message-box"></div>
-                <form id="user-management-form">
-                    <input type="hidden" id="user-id-field">
+                <div id="user-form-message" class="message-box" role="alert" aria-live="polite"></div>
+                <form id="user-management-form" aria-label="Formulário de Usuário">
+                    <input type="hidden" id="user-id-field" name="userId">
                     <div class="input-group">
                         <label for="user-name-field">Nome:</label>
-                        <input type="text" id="user-name-field" required>
+                        <input type="text" id="user-name-field" name="userName" required aria-required="true">
                     </div>
                     <div class="input-group">
                         <label for="user-cpf-field">CPF:</label>
-                        <input type="text" id="user-cpf-field" required maxlength="11" pattern="\d{11}"
-                            title="CPF deve conter 11 dígitos numéricos">
+                        <input type="text" id="user-cpf-field" name="userCpf" required maxlength="11" pattern="\d{11}"
+                            title="CPF deve conter 11 dígitos numéricos" aria-required="true">
                     </div>
                     <div class="input-group">
                         <label for="user-email-field">Email:</label>
-                        <input type="email" id="user-email-field" required>
+                        <input type="email" id="user-email-field" name="userEmail" required aria-required="true">
                     </div>
                     <div class="input-group">
                         <label for="user-password-field">Senha (para cadastro/confirmação):</label>
-                        <input type="password" id="user-password-field" required>
+                        <input type="password" id="user-password-field" name="userPassword" required
+                            aria-required="true">
                     </div>
-                    <!-- Campos para nova senha em modo edição -->
                     <div class="input-group" id="user-new-password-group">
                         <label for="user-new-password-field">Nova Senha (opcional):</label>
-                        <input type="password" id="user-new-password-field">
+                        <input type="password" id="user-new-password-field" name="userNewPassword"
+                            autocomplete="new-password">
                     </div>
                     <div class="input-group" id="user-confirm-new-password-group">
                         <label for="user-confirm-new-password-field">Confirmar Nova Senha:</label>
-                        <input type="password" id="user-confirm-new-password-field">
+                        <input type="password" id="user-confirm-new-password-field" name="userConfirmNewPassword"
+                            autocomplete="new-password">
                     </div>
                     <div class="input-group">
                         <label for="user-type-field">Tipo:</label>
-                        <select id="user-type-field" required>
+                        <select id="user-type-field" name="userType" required aria-required="true">
                             <option value="cliente">Cliente</option>
                             <option value="funcionario">Funcionário</option>
                         </select>
@@ -373,52 +371,53 @@
             </div>
         </div>
 
-        <!-- Seção 6.2: Gerenciar Produtos (Oculta por padrão no CSS/JS) -->
-        <section id="admin-manage-products" class="management-section py-4">
+        <section id="admin-manage-products" class="management-section py-4" style="display: none;" role="region"
+            aria-labelledby="manage-products-heading">
             <div class="container">
-                <h2>Gerenciar Produtos</h2>
-                <div id="products-management-message" class="message-box"></div>
+                <h2 id="manage-products-heading">Gerenciar Produtos</h2>
+                <div id="products-management-message" class="message-box" role="alert" aria-live="polite"></div>
                 <div class="actions">
                     <button class="btn" id="add-product-modal-btn">Adicionar Novo Produto</button>
                     <button class="btn btn-secondary" id="back-to-admin-dashboard-from-products">Voltar</button>
                 </div>
-                <table id="products-table">
+                <table id="products-table" role="table" aria-label="Tabela de Gerenciamento de Produtos">
                     <thead>
                         <tr>
-                            <th>ID</th>
-                            <th>Nome</th>
-                            <th>Preço</th>
-                            <th>Tamanhos</th>
-                            <th>Ações</th>
+                            <th scope="col">ID</th>
+                            <th scope="col">Nome</th>
+                            <th scope="col">Preço</th>
+                            <th scope="col">Tamanhos</th>
+                            <th scope="col">Ações</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <!-- Produtos serão carregados aqui -->
                     </tbody>
                 </table>
             </div>
         </section>
 
-        <!-- Modal para Adicionar/Editar Produto (Reutiliza modal CSS) -->
-        <div id="product-form-modal" class="modal management-form-modal">
+        <div id="product-form-modal" class="modal management-form-modal" role="dialog" aria-modal="true"
+            aria-labelledby="product-modal-title">
             <div class="modal-content">
-                <span class="close-button" id="close-product-form-modal">&times;</span>
+                <span class="close-button" id="close-product-form-modal" role="button"
+                    aria-label="Fechar Formulário de Produto">&times;</span>
                 <h2 id="product-modal-title"></h2>
-                <div id="product-form-message" class="message-box"></div>
-                <form id="product-management-form">
-                    <input type="hidden" id="product-id-field">
+                <div id="product-form-message" class="message-box" role="alert" aria-live="polite"></div>
+                <form id="product-management-form" aria-label="Formulário de Produto">
+                    <input type="hidden" id="product-id-field" name="productId">
                     <div class="input-group">
                         <label for="product-name-field">Nome:</label>
-                        <input type="text" id="product-name-field" required>
+                        <input type="text" id="product-name-field" name="productName" required aria-required="true">
                     </div>
                     <div class="input-group">
                         <label for="product-price-field">Preço:</label>
-                        <input type="number" id="product-price-field" step="0.01" required>
+                        <input type="number" id="product-price-field" name="productPrice" step="0.01" required
+                            aria-required="true">
                     </div>
                     <div class="input-group">
                         <label>Tamanhos e Quantidades:</label>
-                        <div id="sizes-quantities-container">
-                            <!-- Campos de tamanho e quantidade serão adicionados aqui dinamicamente -->
+                        <div id="sizes-quantities-container" role="group"
+                            aria-label="Tamanhos e Quantidades do Produto">
                         </div>
                         <button type="button" class="btn btn-secondary" id="add-size-qty-field">Adicionar
                             Tamanho</button>
@@ -431,58 +430,72 @@
             </div>
         </div>
 
-        <!-- Seção 6.3: Gerenciar Vendas (Oculta por padrão no CSS/JS) -->
-        <section id="admin-manage-sales" class="management-section py-4">
+        <section id="admin-manage-sales" class="management-section py-4" style="display: none;" role="region"
+            aria-labelledby="manage-sales-heading">
             <div class="container">
-                <h2>Gerenciar Vendas</h2>
-                <div id="sales-management-message" class="message-box"></div>
+                <h2 id="manage-sales-heading">Gerenciar Vendas</h2>
+                <div id="sales-management-message" class="message-box" role="alert" aria-live="polite"></div>
                 <div class="actions">
                     <button class="btn btn-secondary" id="back-to-admin-dashboard-from-sales">Voltar</button>
                 </div>
-                <table id="sales-table">
+                <table id="sales-table" role="table" aria-label="Tabela de Gerenciamento de Vendas">
                     <thead>
                         <tr>
-                            <th>ID Venda</th>
-                            <th>Data</th>
-                            <th>Status</th>
-                            <th>Total</th>
-                            <th>Cliente</th>
-                            <th>Email Cliente</th>
-                            <th>Itens</th>
+                            <th scope="col">ID Venda</th>
+                            <th scope="col">Data</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">Total</th>
+                            <th scope="col">Cliente</th>
+                            <th scope="col">Email Cliente</th>
+                            <th scope="col">Itens</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <!-- Vendas serão carregadas aqui -->
                     </tbody>
                 </table>
             </div>
         </section>
 
-        <!-- Seção 6.4: Gerenciar Estoque (Oculta por padrão no CSS/JS) -->
-        <section id="admin-manage-stock" class="management-section py-4">
+        <section id="admin-manage-stock" class="management-section py-4" style="display: none;" role="region"
+            aria-labelledby="manage-stock-heading">
             <div class="container">
-                <h2>Gerenciar Estoque</h2>
-                <div id="stock-management-message" class="message-box"></div>
+                <h2 id="manage-stock-heading">Gerenciar Estoque</h2>
+                <div id="stock-management-message" class="message-box" role="alert" aria-live="polite"></div>
                 <div class="actions">
+
                     <button class="btn btn-secondary" id="back-to-admin-dashboard-from-stock">Voltar</button>
                 </div>
-                <table id="stock-table">
+                <table id="stock-table" role="table" aria-label="Tabela de Gerenciamento de Estoque">
                     <thead>
                         <tr>
-                            <th>ID Produto</th>
-                            <th>Nome Produto</th>
-                            <th>Tamanho</th>
-                            <th>Quantidade</th>
-                            <th>Ações</th>
+                            <th scope="col">ID Produto</th>
+                            <th scope="col">Nome Produto</th>
+                            <th scope="col">Tamanho</th>
+                            <th scope="col">Quantidade</th>
+                            <th scope="col">Ações</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <!-- Estoque será carregado aqui -->
+
                     </tbody>
                 </table>
             </div>
         </section>
 
+        <section id="admin-view-reports" class="management-section py-4" style="display: none;" role="region"
+            aria-labelledby="view-reports-heading">
+            <div class="container">
+                <h2 id="view-reports-heading">Relatórios de Vendas</h2>
+                <div id="reports-message" class="message-box" role="alert" aria-live="polite"></div>
+                <div class="actions">
+                    <button class="btn btn-secondary" id="back-to-admin-dashboard-from-reports">Voltar</button>
+                </div>
+                <div id="reports-content">
+                    <p id="empty-reports-message" style="text-align: center; color: #666; font-size: 1.2rem;">Nenhum
+                        relatório de vendas encontrado.</p>
+                </div>
+            </div>
+        </section>
 
     </main>
 
@@ -519,10 +532,10 @@
             <div class="footer-col">
                 <h4>Siga-nos</h4>
                 <div class="social-links">
-                    <a href="#"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#"><i class="fab fa-twitter"></i></a>
-                    <a href="#"><i class="fab fa-instagram"></i></a>
-                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
                 </div>
             </div>
         </div>
@@ -531,8 +544,8 @@
         </div>
     </footer>
 
-    <!-- Link para o arquivo JavaScript externo -->
-    <script src="script.js"></script>
+
+    <script src="script.js" defer></script>
 </body>
 
 </html>

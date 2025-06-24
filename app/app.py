@@ -3,25 +3,25 @@ from flask_cors import CORS
 import os
 import json
 import sqlite3
-from datetime import datetime 
+from datetime import datetime
 from .bancoDeDados.conexao import conectar, executar_comando, consultar, executar_comando_com_retorno
-from .produtos import adicionar_produto, editar_produto, excluir_produto
-from .usuarios import register_user, login_user, edit_user, delete_user, list_users 
+from .produtos import adicionar_produto, editar_produto, excluir_produto, obter_produto_por_id
+from .usuarios import register_user, login_user, edit_user, delete_user, list_users
+from .vendas import salvar_venda, buscar_vendas_usuario, buscar_itens_venda, listar_todas_vendas
+from .relatorios import ler_relatorios
+
 app = Flask(__name__)
 
 CORS(app)
 
-
 CAMINHO_BANCO = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'produtos.db')
 
-
 def criar_banco():
-    conexao = None 
+    conexao = None
     try:
         conexao = sqlite3.connect(CAMINHO_BANCO)
         cursor = conexao.cursor()
 
-       
         conexao.execute("PRAGMA foreign_keys = ON;")
 
         cursor.executescript('''
@@ -29,7 +29,7 @@ def criar_banco():
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 nome TEXT NOT NULL,
                 preco REAL NOT NULL,
-                tamanhos TEXT NOT NULL -- Armazena JSON string com os nomes dos tamanhos disponíveis (e.g., "['P', 'M']")
+                tamanhos TEXT NOT NULL
             );
 
             CREATE TABLE IF NOT EXISTS estoque (
@@ -69,7 +69,7 @@ def criar_banco():
                 FOREIGN KEY (produto_id) REFERENCES produtos(id)
             );
         ''')
-        conexao.commit() 
+        conexao.commit()
         cursor.execute('SELECT COUNT(*) FROM produtos')
         quantidade_produtos = cursor.fetchone()[0]
 
@@ -88,7 +88,6 @@ def criar_banco():
             ]
 
             for camisa in camisas:
-               
                 tamanhos_disponiveis_para_produto = list(camisa["tamanhos"].keys())
                 tamanhos_json_db = json.dumps(tamanhos_disponiveis_para_produto)
 
@@ -96,8 +95,7 @@ def criar_banco():
                     INSERT INTO produtos (nome, preco, tamanhos)
                     VALUES (?, ?, ?)
                 ''', (camisa["nome"], camisa["preco"], tamanhos_json_db))
-                produto_id = cursor.lastrowid 
-                
+                produto_id = cursor.lastrowid
 
                 for tamanho, quantidade in camisa["tamanhos"].items():
                     cursor.execute('''
@@ -108,7 +106,6 @@ def criar_banco():
         else:
             print("Tabela de produtos já possui dados cadastrados. Pulando inserção inicial.")
 
-       
         cursor.execute('SELECT COUNT(*) FROM usuarios')
         quantidade_usuarios = cursor.fetchone()[0]
 
@@ -135,14 +132,14 @@ def criar_banco():
         else:
             print("Tabela de usuários já possui dados cadastrados. Pulando inserção inicial.")
 
-        conexao.commit() 
+        conexao.commit()
         
         print(f"Banco de dados e tabelas criados/verificados com sucesso em {CAMINHO_BANCO}!")
 
     except sqlite3.Error as er:
         print(f"Erro SQLite ao criar banco ou inserir dados: {er}")
         if conexao:
-            conexao.rollback() 
+            conexao.rollback()
     finally:
         if conexao:
             conexao.close()
@@ -150,13 +147,11 @@ def criar_banco():
 
 @app.route('/api/produtos', methods=['GET'])
 def get_produtos():
-    
     sql = "SELECT id, nome, preco, tamanhos FROM produtos"
-    resultados_produtos = consultar(sql) 
+    resultados_produtos = consultar(sql)
 
     produtos_formatados = []
     for id_produto, nome, preco, tamanhos_json_db in resultados_produtos:
-      
         estoque_sql = "SELECT tamanho, quantidade FROM estoque WHERE produto_id = ?"
         estoque_resultados = consultar(estoque_sql, (id_produto,))
         estoque_real_dict = {tamanho: qtd for tamanho, qtd in estoque_resultados}
@@ -165,24 +160,27 @@ def get_produtos():
             "id": id_produto,
             "nome": nome,
             "preco": preco,
-            "tamanhos": estoque_real_dict 
+            "tamanhos": estoque_real_dict
         })
     return jsonify(produtos_formatados)
+
+@app.route('/api/produtos/<int:produto_id>', methods=['GET'])
+def get_produto_detalhes(produto_id):
+    produto = obter_produto_por_id(produto_id)
+    if produto:
+        return jsonify(produto), 200
+    return jsonify({"message": "Produto não encontrado."}), 404
 
 
 @app.route('/api/produtos', methods=['POST'])
 def add_new_produto():
-    """
-    Adiciona um novo produto ao banco de dados e seu estoque.
-    Espera um JSON com 'nome', 'preco' e 'tamanhos' (ex: {"P": 10, "M": 5}).
-    """
     data = request.get_json()
     if not data:
         return jsonify({"message": "Dados inválidos"}), 400
 
     nome = data.get('nome')
     preco = data.get('preco')
-    tamanhos_dict = data.get('tamanhos') 
+    tamanhos_dict = data.get('tamanhos')
 
     if not all([nome, preco, tamanhos_dict]):
         return jsonify({"message": "Nome, preço e tamanhos são obrigatórios"}), 400
@@ -190,7 +188,7 @@ def add_new_produto():
         return jsonify({"message": "Tamanhos devem ser um dicionário não vazio"}), 400
 
     try:
-        adicionar_produto(nome, preco, tamanhos_dict) 
+        adicionar_produto(nome, preco, tamanhos_dict)
         return jsonify({"message": f"Produto '{nome}' adicionado com sucesso!"}), 201
     except Exception as e:
         return jsonify({"message": f"Erro ao adicionar produto: {str(e)}"}), 500
@@ -198,7 +196,6 @@ def add_new_produto():
 
 @app.route('/api/produtos/<int:produto_id>', methods=['PUT'])
 def update_produto(produto_id):
-    
     data = request.get_json()
     if not data:
         return jsonify({"message": "Dados inválidos"}), 400
@@ -208,7 +205,6 @@ def update_produto(produto_id):
     novos_tamanhos = data.get('tamanhos')
 
     try:
-        
         success, message = editar_produto(produto_id, novo_nome, novo_preco, novos_tamanhos)
         if success:
             return jsonify({"message": message}), 200
@@ -220,21 +216,18 @@ def update_produto(produto_id):
 
 @app.route('/api/produtos/<int:produto_id>', methods=['DELETE'])
 def delete_produto(produto_id):
-   
     try:
-        
         success, message = excluir_produto(produto_id)
         if success:
             return jsonify({"message": message}), 200
         else:
-            return jsonify({"message": message}), 404 #caso o produto não seja encontrado
+            return jsonify({"message": message}), 404
     except Exception as e:
         return jsonify({"message": f"Erro ao excluir produto: {str(e)}"}), 500
 
 
 @app.route('/api/usuarios/registrar', methods=['POST'])
 def api_register_user():
-   
     data = request.get_json()
     if not data:
         return jsonify({"message": "Dados inválidos"}), 400
@@ -243,22 +236,20 @@ def api_register_user():
     cpf = data.get('cpf')
     email = data.get('email')
     senha = data.get('senha')
-    tipo = data.get('tipo', 'cliente') 
+    tipo = data.get('tipo', 'cliente')
 
     if not all([nome, cpf, email, senha]):
         return jsonify({"message": "Nome, CPF, email e senha são obrigatórios"}), 400
 
-   
     success, message = register_user(nome, email, senha, cpf, tipo)
     if success:
         return jsonify({"message": message}), 201
     else:
-        return jsonify({"message": message}), 409 
+        return jsonify({"message": message}), 409
 
 
 @app.route('/api/usuarios/login', methods=['POST'])
 def api_user_login():
-   
     data = request.get_json()
     if not data:
         return jsonify({"message": "Dados inválidos"}), 400
@@ -269,18 +260,16 @@ def api_user_login():
     if not all([email, senha]):
         return jsonify({"message": "Email e senha são obrigatórios"}), 400
 
-   
     success, message, user_data = login_user(email, senha)
     if success:
-        
-        return jsonify({"message": message, "user": {"id": user_data[0], "name": user_data[1], "type": user_data[2]}}), 200
+        user_info = {"id": user_data[0], "name": user_data[1], "type": user_data[2], "email": email, "cpf": user_data[3]}
+        return jsonify({"message": message, "user": user_info}), 200
     else:
         return jsonify({"message": message}), 401
 
 
 @app.route('/api/usuarios', methods=['GET'])
 def api_get_users():
-   
     users_from_db = list_users()
     users_list_for_api = [{"id": user[0], "name": user[1], "cpf": user[2], "email": user[3], "type": user[4]} for user in users_from_db]
     return jsonify(users_list_for_api), 200
@@ -288,19 +277,17 @@ def api_get_users():
 
 @app.route('/api/usuarios/<id_or_email>', methods=['PUT'])
 def api_update_user(id_or_email):
-   
     data = request.get_json()
     if not data:
         return jsonify({"message": "Dados inválidos"}), 400
 
-    current_password = data.get('password') 
+    current_password = data.get('password')
     new_name = data.get('new_name')
     new_email = data.get('new_email')
     new_password = data.get('new_password')
     new_tipo = data.get('new_tipo')
 
     try:
-
         success, message = edit_user(
             id=int(id_or_email) if isinstance(id_or_email, str) and id_or_email.isdigit() else None,
             email=id_or_email if not (isinstance(id_or_email, str) and id_or_email.isdigit()) else None,
@@ -313,13 +300,12 @@ def api_update_user(id_or_email):
         if success:
             return jsonify({"message": message}), 200
         else:
-            return jsonify({"message": message}), 400 
+            return jsonify({"message": message}), 400
     except Exception as e:
         return jsonify({"message": f"Erro ao atualizar usuário: {str(e)}"}), 500
 
 @app.route('/api/usuarios/<id_or_email>', methods=['DELETE'])
 def api_delete_user(id_or_email):
-  
     data = request.get_json()
     if not data or 'password' not in data:
         return jsonify({"message": "Senha é obrigatória para exclusão"}), 400
@@ -327,30 +313,29 @@ def api_delete_user(id_or_email):
     password_confirmation = data.get('password')
 
     try:
-
         success, message = delete_user(id_or_email, password=password_confirmation)
         if success:
             return jsonify({"message": message}), 200
         else:
-            return jsonify({"message": message}), 404 
+            return jsonify({"message": message}), 404
     except Exception as e:
         return jsonify({"message": f"Erro ao excluir usuário: {str(e)}"}), 500
 
 @app.route('/api/vendas', methods=['POST'])
 def api_salvar_venda():
-    
     data = request.get_json()
     if not data:
         return jsonify({"message": "Dados inválidos"}), 400
 
     usuario_id = data.get('usuario_id')
-    carrinho = data.get('carrinho') 
+    carrinho = data.get('carrinho')
 
     if not all([usuario_id, carrinho]):
         return jsonify({"message": "ID do usuário e carrinho são obrigatórios"}), 400
     if not isinstance(carrinho, list) or not carrinho:
         return jsonify({"message": "Carrinho deve ser uma lista não vazia de itens"}), 400
 
+    from .vendas import verificar_estoque
     for item in carrinho:
         produto_id = item.get('produto_id')
         tamanho = item.get('tamanho')
@@ -358,7 +343,6 @@ def api_salvar_venda():
         if not all([produto_id, tamanho, quantidade]):
             return jsonify({"message": "Item do carrinho incompleto"}), 400
 
-        from .vendas import verificar_estoque 
         if not verificar_estoque(produto_id, tamanho, quantidade):
             return jsonify({"message": f"Estoque insuficiente para o produto {produto_id} (Tam: {tamanho})"}), 400
 
@@ -374,7 +358,6 @@ def api_salvar_venda():
 
 @app.route('/api/vendas/usuario/<int:usuario_id>', methods=['GET'])
 def api_buscar_vendas_usuario(usuario_id):
-    
     from .vendas import buscar_vendas_usuario, buscar_itens_venda
     vendas_usuario = buscar_vendas_usuario(usuario_id)
 
@@ -400,8 +383,7 @@ def api_buscar_vendas_usuario(usuario_id):
 
 @app.route('/api/vendas/todas', methods=['GET'])
 def api_listar_todas_vendas():
-   
-    from .vendas import listar_todas_vendas, buscar_itens_venda 
+    from .vendas import listar_todas_vendas, buscar_itens_venda
     todas_vendas = listar_todas_vendas()
 
     vendas_formatadas = []
@@ -424,6 +406,13 @@ def api_listar_todas_vendas():
             "itens": itens_formatados
         })
     return jsonify(vendas_formatadas), 200
+
+@app.route('/api/relatorios/vendas', methods=['GET'])
+def api_get_relatorios_vendas():
+    from .relatorios import ler_relatorios
+    relatorios = ler_relatorios()
+    return jsonify(relatorios), 200
+
 FRONTEND_DIR = os.path.join(os.path.dirname(__file__), '..', 'frontend')
 
 @app.route('/')

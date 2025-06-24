@@ -1,9 +1,8 @@
 import json
-from .produtos import listar_produtos 
+from .produtos import listar_produtos
 from .bancoDeDados.conexao import executar_comando, consultar
 
 def adicionar_quantidade_produto():
-   
     while True:
         listar_produtos()
         try:
@@ -47,14 +46,12 @@ def adicionar_quantidade_produto():
             resultado_estoque = consultar(sql_buscar_estoque, (id_produto, tamanho))
 
             if resultado_estoque:
-               
                 nova_quantidade = resultado_estoque[0][0] + quantidade_adicional
                 executar_comando(
                     "UPDATE estoque SET quantidade = ? WHERE produto_id = ? AND tamanho = ?",
                     (nova_quantidade, id_produto, tamanho)
                 )
             else:
-                
                 executar_comando(
                     "INSERT INTO estoque (produto_id, tamanho, quantidade) VALUES (?, ?, ?)",
                     (id_produto, tamanho, quantidade_adicional)
@@ -72,5 +69,4 @@ def adicionar_quantidade_produto():
 
 
 def check_product_in_stock():
-   
-    listar_produtos() 
+    listar_produtos()

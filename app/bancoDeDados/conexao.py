@@ -3,13 +3,11 @@ import os
 CAMINHO_BANCO = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'produtos.db')
 
 def conectar():
-  
     conexao = sqlite3.connect(CAMINHO_BANCO)
-    conexao.execute("PRAGMA foreign_keys = ON;") 
+    conexao.execute("PRAGMA foreign_keys = ON;")
     return conexao
 
 def executar_comando(sql, parametros=()):
-    
     conexao = conectar()
     cursor = conexao.cursor()
     try:
@@ -18,12 +16,11 @@ def executar_comando(sql, parametros=()):
     except sqlite3.Error as e:
         conexao.rollback()
         print(f"Erro SQLite ao executar comando: {e}")
-        raise 
+        raise
     finally:
         conexao.close()
 
 def consultar(sql, parametros=()):
-    
     conexao = conectar()
     cursor = conexao.cursor()
     try:
@@ -34,8 +31,7 @@ def consultar(sql, parametros=()):
         conexao.close()
 
 def executar_comando_com_retorno(sql, parametros=()):
-
     conexao = conectar()
     cursor = conexao.cursor()
     cursor.execute(sql, parametros)
-    return cursor, conexao 
+    return cursor, conexao

@@ -1,5 +1,3 @@
-/* frontend/style.css */
-
 :root {
     --white: #FFFFFF;
     --black: #000000;
@@ -29,11 +27,13 @@ body {
     flex-direction: column;
 }
 
+
 .container {
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 20px;
 }
+
 
 .text-center {
     text-align: center;
@@ -48,21 +48,28 @@ body {
     margin-bottom: 2rem;
 }
 
+
 .main-header {
     background: var(--dark-purple);
     color: var(--white);
     padding: 1rem 0;
     position: sticky;
+
     top: 0;
     z-index: 1000;
+
     box-shadow: 0 2px 10px var(--shadow);
     transition: all 0.3s ease;
+
 }
+
 
 .main-header.scrolled {
     padding: 0.7rem 0;
     background: rgba(75, 0, 130, 0.95);
+
 }
+
 
 .navbar {
     display: flex;
@@ -83,11 +90,13 @@ body {
     height: 40px;
     margin-right: 10px;
     transition: transform 0.3s ease;
+
 }
 
 .logo img:hover {
     transform: scale(1.1);
 }
+
 
 .nav-list {
     list-style: none;
@@ -130,7 +139,7 @@ body {
     position: relative;
     display: inline-block;
     margin-left: 30px;
-    /* Para alinhar com outros itens da nav-list */
+
 }
 
 .cart-icon-container .fa-shopping-cart {
@@ -143,6 +152,7 @@ body {
     color: var(--lilac);
 }
 
+
 .cart-count {
     background-color: var(--lilac);
     color: var(--dark-purple);
@@ -153,8 +163,6 @@ body {
     position: absolute;
     top: -8px;
     right: -10px;
-    min-width: 20px;
-    /* Garante que o círculo seja visível mesmo com 1 dígito */
     text-align: center;
     line-height: 1.2;
 }
@@ -176,10 +184,8 @@ body {
 }
 
 .hero {
-    /* Background agora usa uma imagem local, coloque 'stadium_bg.jpg' em frontend/imagens/ */
     background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('imagens/stadium_bg.jpg') no-repeat center center/cover;
     background-position: center bottom;
-    /* Ajuste para melhor visualização */
     color: var(--white);
     text-align: center;
     padding: 100px 0;
@@ -202,6 +208,7 @@ body {
     margin-bottom: 2rem;
     max-width: 700px;
 }
+
 
 .btn {
     display: inline-block;
@@ -235,7 +242,7 @@ body {
     border-color: var(--dark-purple);
 }
 
-/* Loading Spinner */
+
 .spinner {
     border: 4px solid rgba(0, 0, 0, 0.1);
     width: 36px;
@@ -256,11 +263,12 @@ body {
     }
 }
 
-/* General Sections */
+
 section {
     padding: 60px 0;
     background-color: var(--white);
 }
+
 
 section:nth-of-type(even) {
     background-color: #f8f8f8;
@@ -275,6 +283,7 @@ h2 {
     position: relative;
 }
 
+
 h2::after {
     content: '';
     position: absolute;
@@ -287,11 +296,13 @@ h2::after {
     border-radius: 2px;
 }
 
+
 .product-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 30px;
 }
+
 
 .product-card {
     background: var(--white);
@@ -341,7 +352,7 @@ h2::after {
 }
 
 .product-card .available-sizes {
-    /* Novo estilo para tamanhos disponíveis */
+
     font-size: 0.9rem;
     color: #888;
     margin-bottom: 10px;
@@ -352,6 +363,7 @@ h2::after {
     font-size: 0.95rem;
     padding: 10px 20px;
 }
+
 
 .products-page {
     display: flex;
@@ -378,29 +390,24 @@ h2::after {
 .filter-group label {
     display: block;
     margin-bottom: 8px;
-    /* Reduzido de 10px para 8px */
     font-weight: 600;
     color: var(--text-dark);
     font-size: 0.95rem;
-    /* Ajustado um pouco menor */
 }
 
 .filter-group select,
 .filter-group input[type="range"],
 .filter-group input[type="text"],
 .filter-group input[type="number"] {
-    /* Adicionado input type number */
     width: 100%;
     padding: 8px;
     border: 1px solid #ddd;
     border-radius: 5px;
     font-family: 'Poppins', sans-serif;
     margin-bottom: 5px;
-    /* Espaçamento entre input e display */
 }
 
 .filter-group button {
-    /* Botões de filtro */
     width: 100%;
     padding: 10px;
     background-color: var(--dark-purple);
@@ -416,7 +423,6 @@ h2::after {
     color: var(--dark-purple);
 }
 
-
 .price-range-display {
     margin-top: 5px;
     font-size: 0.9rem;
@@ -426,6 +432,7 @@ h2::after {
 .main-content {
     flex-grow: 1;
 }
+
 
 .product-detail-container {
     display: flex;
@@ -524,7 +531,6 @@ h2::after {
 }
 
 .size-selector button:disabled {
-    /* Estilo para tamanho sem estoque */
     background-color: #ccc;
     cursor: not-allowed;
     opacity: 0.6;
@@ -708,7 +714,7 @@ h2::after {
     padding: 40px 0;
     text-align: center;
     margin-top: auto;
-    /* Empurra o footer para baixo */
+
 }
 
 .main-footer .container {
@@ -785,14 +791,14 @@ h2::after {
     font-size: 0.9rem;
 }
 
-/* --- Telas de Login/Cadastro/Perfil (Novas Adições) --- */
+
 .auth-form-container,
 .profile-container {
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: calc(100vh - 120px);
-    /* Ajuste para não cobrir header/footer */
+
     padding: 20px;
     background-color: #f8f8f8;
 }
@@ -814,7 +820,7 @@ h2::after {
     font-size: 2rem;
     color: var(--dark-purple);
     position: relative;
-    /* Para o after */
+
 }
 
 .auth-form h2::after,
@@ -859,7 +865,7 @@ h2::after {
 }
 
 .auth-form .link-button {
-    /* Botão tipo link */
+
     background: none;
     border: none;
     color: var(--dark-purple);
@@ -874,41 +880,54 @@ h2::after {
     color: var(--lilac);
 }
 
-/* Modal de Cadastro */
 .modal {
     display: none;
-    /* Oculto por padrão */
+
     position: fixed;
+
     z-index: 1001;
-    /* Acima de tudo */
+
     left: 0;
     top: 0;
     width: 100%;
     height: 100%;
     overflow: auto;
+
     background-color: rgba(0, 0, 0, 0.7);
-    /* Fundo semi-transparente */
+
     justify-content: center;
+
     align-items: center;
+
 }
 
 .modal-content {
     background-color: var(--white);
     margin: auto;
+
     padding: 30px;
     border-radius: 10px;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
     width: 90%;
     max-width: 500px;
+
     position: relative;
 }
+
+
+.management-form-modal .modal-content {
+    max-width: 600px;
+}
+
 
 .close-button {
     color: #aaa;
     float: right;
+
     font-size: 28px;
     font-weight: bold;
     position: absolute;
+
     top: 10px;
     right: 20px;
     cursor: pointer;
@@ -921,7 +940,7 @@ h2::after {
     cursor: pointer;
 }
 
-/* Mensagens de Feedback (Sucesso/Erro) */
+
 .message-box {
     padding: 10px 15px;
     border-radius: 5px;
@@ -929,7 +948,7 @@ h2::after {
     text-align: center;
     font-weight: 600;
     display: none;
-    /* Oculto por padrão */
+
 }
 
 .message-box.success {
@@ -944,7 +963,7 @@ h2::after {
     border: 1px solid #f5c6cb;
 }
 
-/* --- Telas do Funcionário --- */
+
 .admin-dashboard {
     padding: 40px 0;
     background-color: #f8f8f8;
@@ -983,11 +1002,11 @@ h2::after {
     color: var(--text-dark);
 }
 
-/* Tabelas de Gerenciamento */
+
 .management-section {
     padding: 40px 0;
     display: none;
-    /* Oculto por padrão */
+
 }
 
 .management-section h2 {
@@ -995,6 +1014,7 @@ h2::after {
 }
 
 .management-section .actions {
+
     margin-bottom: 20px;
     text-align: right;
 }
@@ -1002,12 +1022,13 @@ h2::after {
 .management-section table {
     width: 100%;
     border-collapse: collapse;
+
     margin-bottom: 30px;
     background-color: var(--white);
     box-shadow: 0 2px 8px var(--shadow);
     border-radius: 8px;
     overflow: hidden;
-    /* Para bordas arredondadas */
+
 }
 
 .management-section th,
@@ -1026,6 +1047,7 @@ h2::after {
 }
 
 .management-section tr:nth-child(even) {
+
     background-color: #f4f4f4;
 }
 
@@ -1051,33 +1073,37 @@ h2::after {
     color: #c82333;
 }
 
-/* Modal para Formulários de Gerenciamento (Adicionar/Editar) */
+
 .management-form-modal {
-    /* Reutilizar modal CSS */
+
     display: none;
     position: fixed;
     z-index: 1001;
-    /* Acima de tudo */
+
     left: 0;
     top: 0;
     width: 100%;
     height: 100%;
     overflow: auto;
+
     background-color: rgba(0, 0, 0, 0.7);
-    /* Fundo semi-transparente */
+
     justify-content: center;
+
     align-items: center;
+
 }
 
 .management-form-modal .modal-content {
     background-color: var(--white);
     margin: auto;
+
     padding: 30px;
     border-radius: 10px;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
     width: 90%;
     max-width: 600px;
-    /* Mais largo para formulários de gerenciamento */
+
     position: relative;
 }
 
@@ -1105,10 +1131,45 @@ h2::after {
     flex-grow: 1;
 }
 
-/* Responsividade de Tabelas */
+
+.size-qty-pair {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+
+    margin-bottom: 10px;
+}
+
+.size-qty-pair input {
+    margin-bottom: 0;
+
+}
+
+.size-qty-pair .product-size-field {
+    flex: 2;
+
+}
+
+.size-qty-pair .product-qty-field {
+    flex: 1;
+
+}
+
+.size-qty-pair .remove-size-qty-field {
+    padding: 5px 10px;
+
+    font-size: 1rem;
+    margin-left: 0;
+    flex-grow: 0;
+
+}
+
+
+
 @media (max-width: 768px) {
     .navbar {
         flex-wrap: wrap;
+
     }
 
     .logo {
@@ -1119,12 +1180,15 @@ h2::after {
 
     .nav-list {
         flex-direction: column;
+
         width: 100%;
         background: var(--dark-purple);
         position: absolute;
         top: 80px;
+
         left: 0;
         transform: translateX(-100%);
+
         transition: transform 0.3s ease-in-out;
         z-index: 999;
         padding: 20px 0;
@@ -1133,10 +1197,11 @@ h2::after {
 
     .nav-list.active {
         transform: translateX(0);
+
     }
 
     .menu-toggle {
-        /* Hamburger icon */
+
         display: flex;
         position: absolute;
         right: 20px;
@@ -1145,16 +1210,17 @@ h2::after {
 
     .nav-list li {
         margin: 15px 0;
+
     }
 
     .cart-icon-container {
         margin-left: 0;
-        /* Remove margin on mobile */
+
         width: 100%;
-        /* Take full width */
+
         text-align: center;
         order: 3;
-        /* Move to the bottom of the flex column */
+
         margin-top: 15px;
     }
 
@@ -1169,16 +1235,19 @@ h2::after {
 
     .product-detail-container {
         flex-direction: column;
+
         align-items: center;
     }
 
     .product-images,
     .product-info {
         max-width: 90%;
+
     }
 
     .cart-item {
         flex-direction: column;
+
         align-items: flex-start;
         text-align: center;
     }
@@ -1212,20 +1281,22 @@ h2::after {
 
     .footer-col {
         flex-basis: 45%;
+
     }
 
     .sidebar {
         width: 100%;
-        /* Sidebar takes full width on mobile */
+
         padding-right: 0;
         margin-bottom: 30px;
     }
 
     .products-page {
         flex-direction: column;
+
     }
 
-    /* Responsividade de Tabelas para mobile */
+
     .management-section table,
     .management-section thead,
     .management-section tbody,
@@ -1245,7 +1316,6 @@ h2::after {
         border: 1px solid #ccc;
         margin-bottom: 10px;
         border-radius: 8px;
-        /* Bordas arredondadas para cada linha */
     }
 
     .management-section td {
@@ -1253,6 +1323,7 @@ h2::after {
         border-bottom: 1px solid #eee;
         position: relative;
         padding-left: 50%;
+
         text-align: right;
     }
 
@@ -1265,10 +1336,9 @@ h2::after {
         white-space: nowrap;
         text-align: left;
         font-weight: bold;
-        /* Adicione o "content" para cada coluna aqui */
+
     }
 
-    /* Conteúdo para pseudo-elementos (para acessibilidade em tabelas responsivas) */
     #users-table td:nth-of-type(1):before {
         content: "ID:";
     }

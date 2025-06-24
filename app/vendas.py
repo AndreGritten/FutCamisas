@@ -1,14 +1,14 @@
 import json
 from datetime import datetime
 from .bancoDeDados.conexao import executar_comando, consultar, executar_comando_com_retorno
-from .produtos import listar_produtos 
+from .produtos import listar_produtos
+from .relatorios import registrar_venda_em_arquivo # Importa a nova função de relatório
+
 
 def calcular_total(carrinho):
-    
     return sum(item["preco_unitario"] * item["quantidade"] for item in carrinho)
 
 def obter_produto_por_id_e_tamanho(id_produto, tamanho):
-    
     sql = "SELECT p.nome, p.preco, e.quantidade FROM produtos p JOIN estoque e ON p.id = e.produto_id WHERE p.id = ? AND e.tamanho = ?"
     resultado = consultar(sql, (id_produto, tamanho))
     if resultado:
@@ -17,7 +17,6 @@ def obter_produto_por_id_e_tamanho(id_produto, tamanho):
     return None
 
 def verificar_estoque(produto_id, tamanho, quantidade_desejada):
-
     sql = "SELECT quantidade FROM estoque WHERE produto_id = ? AND tamanho = ?"
     resultado = consultar(sql, (produto_id, tamanho))
     if resultado and resultado[0][0] >= quantidade_desejada:
@@ -25,21 +24,28 @@ def verificar_estoque(produto_id, tamanho, quantidade_desejada):
     return False
 
 def salvar_venda(usuario_id, carrinho):
-    
     total = calcular_total(carrinho)
+    data_hora_venda = datetime.now()
+
+    # Obter nome do cliente para o relatório
+    sql_cliente_nome = "SELECT nome FROM usuarios WHERE id = ?"
+    resultado_cliente = consultar(sql_cliente_nome, (usuario_id,))
+    cliente_nome = resultado_cliente[0][0] if resultado_cliente else "Desconhecido"
+
     sql_venda = '''
         INSERT INTO vendas (usuario_id, data, status, total)
-        VALUES (?, ?, 'pendente', ?) -- Status inicial 'pendente', você pode mudar para 'pago' após um gateway de pagamento
+        VALUES (?, ?, 'pendente', ?)
     '''
 
-    cursor, conexao = executar_comando_com_retorno(sql_venda, (usuario_id, datetime.now().isoformat(), total))
+    cursor, conexao = executar_comando_com_retorno(sql_venda, (usuario_id, data_hora_venda.isoformat(), total))
     venda_id = cursor.lastrowid
 
-    if not venda_id: 
+    if not venda_id:
         conexao.rollback()
         conexao.close()
         return None
 
+    produtos_para_relatorio = []
     try:
         for item in carrinho:
             sql_item = '''
@@ -54,6 +60,14 @@ def salvar_venda(usuario_id, carrinho):
                 item["preco_unitario"]
             ))
             
+            # Adiciona item formatado para o relatório
+            produtos_para_relatorio.append({
+                "nome": item["name"], # Assumindo que 'name' vem do carrinho do frontend
+                "tamanho": item["tamanho"],
+                "quantidade": item["quantidade"],
+                "preco_unitario": item["preco_unitario"]
+            })
+
             sql_update_estoque = '''
                 UPDATE estoque SET quantidade = quantidade - ?
                 WHERE produto_id = ? AND tamanho = ?
@@ -64,23 +78,24 @@ def salvar_venda(usuario_id, carrinho):
                 item["tamanho"]
             ))
         conexao.commit()
+
+        # Registrar no arquivo de relatórios APÓS o commit no banco de dados
+        registrar_venda_em_arquivo(venda_id, cliente_nome, data_hora_venda.isoformat(), produtos_para_relatorio, total)
         return venda_id
     except sqlite3.Error as e:
-        conexao.rollback() 
+        conexao.rollback()
         print(f"Erro ao salvar venda ou itens: {e}")
         return None
     finally:
         conexao.close()
 
 def buscar_vendas_usuario(usuario_id):
-    
     sql_vendas = '''
         SELECT id, data, status, total FROM vendas WHERE usuario_id = ? ORDER BY data DESC
     '''
     return consultar(sql_vendas, (usuario_id,))
 
 def buscar_itens_venda(venda_id):
-   
     sql_itens = '''
         SELECT p.nome, iv.tamanho, iv.quantidade, iv.preco_unitario
         FROM itens_venda iv
@@ -90,7 +105,6 @@ def buscar_itens_venda(venda_id):
     return consultar(sql_itens, (venda_id,))
 
 def listar_todas_vendas():
-    """Lista todas as vendas registradas no sistema."""
     sql = '''
         SELECT v.id, v.data, v.status, v.total,
                u.nome, u.cpf, u.email
@@ -101,14 +115,13 @@ def listar_todas_vendas():
     return consultar(sql)
 
 def realizar_venda_interativo(usuario):
-    """Permite a um usuário interativamente adicionar produtos ao carrinho e finalizar uma venda."""
-    usuario_id, nome, tipo_usuario = usuario 
+    usuario_id, nome, tipo_usuario, email, cpf = usuario
     print(f"\nBem-vindo(a) ao processo de compra, {nome}!")
 
     carrinho = []
 
     while True:
-        listar_produtos() 
+        listar_produtos()
         try:
             id_produto_input = input("ID do produto a adicionar (ou 0 para finalizar): ").strip()
             if id_produto_input == "0":
@@ -118,20 +131,19 @@ def realizar_venda_interativo(usuario):
             print("ID inválido. Digite um número válido ou 0 para finalizar.")
             continue
 
-       
         sql_tamanhos_produto = "SELECT tamanhos FROM produtos WHERE id = ?"
         produto_info = consultar(sql_tamanhos_produto, (id_produto,))
         if not produto_info:
             print("Produto não encontrado.")
             continue
 
-        tamanhos_disponiveis_list = json.loads(produto_info[0][0]) # [P, M, G]
+        tamanhos_disponiveis_list = json.loads(produto_info[0][0])
 
         if not tamanhos_disponiveis_list:
             print("Este produto não possui tamanhos disponíveis.")
             continue
 
-        print(f"Tamanhos disponíveis para {produto_info[0][0]}: {', '.join(tamanhos_disponiveis_list)}")
+        print(f"Tamanhos disponíveis para o produto: {', '.join(tamanhos_disponiveis_list)}")
         tamanho = input("Escolha o tamanho: ").strip().upper()
 
         if tamanho not in tamanhos_disponiveis_list:
@@ -147,9 +159,8 @@ def realizar_venda_interativo(usuario):
             print("Quantidade inválida.")
             continue
 
-       
         nome_produto, preco_unitario, estoque_atual = obter_produto_por_id_e_tamanho(id_produto, tamanho)
-        if not nome_produto: 
+        if not nome_produto:
             print("Produto ou tamanho não encontrado no estoque.")
             continue
 
@@ -158,7 +169,6 @@ def realizar_venda_interativo(usuario):
             print(f"Estoque insuficiente para o tamanho {tamanho}. Disponível: {estoque_atual} un.")
             continue
 
-       
         carrinho.append({
             "produto_id": id_produto,
             "nome": nome_produto,
@@ -182,7 +192,7 @@ def realizar_venda_interativo(usuario):
 
     confirmar = input("Deseja finalizar a compra? (S/N): ").strip().upper()
     if confirmar == "S":
-        venda_id = salvar_venda(usuario_id, carrinho)
+        venda_id = salvar_venda(usuario_id, carrinho) # Agora salvar_venda lida com o nome do cliente
         if venda_id:
             print(f"Venda concluída com sucesso! ID da venda: {venda_id}")
         else:
@@ -192,7 +202,6 @@ def realizar_venda_interativo(usuario):
 
 
 def buscar_historico_vendas_interativo(usuario_id):
-    
     vendas = buscar_vendas_usuario(usuario_id)
     if not vendas:
         print("Nenhuma venda encontrada para este usuário.")
@@ -214,7 +223,6 @@ def buscar_historico_vendas_interativo(usuario_id):
         print('-'*50)
 
 def listar_vendas_interativo():
-   
     vendas = listar_todas_vendas()
     if not vendas:
         print("\nNão há vendas registradas no sistema.")
