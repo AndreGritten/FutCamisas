@@ -1,24 +1,24 @@
 import json
 from datetime import datetime
-from .bancoDeDados.conexao import executar_comando, consultar, executar_comando_com_retorno
-from .produtos import listar_produtos
-from .relatorios import registrar_venda_em_arquivo # Importa a nova função de relatório
+from bancoDeDados.conexao import *
+from produtos import *
+from relatorios import * # Importa a nova função de relatório
 
 
 def calcular_total(carrinho):
     return sum(item["preco_unitario"] * item["quantidade"] for item in carrinho)
 
-def obter_produto_por_id_e_tamanho(id_produto, tamanho):
+def obter_produto_por_id_e_tamanho(id_produto, tamanho, conexao=None): # Adicionar conexao como parametro
     sql = "SELECT p.nome, p.preco, e.quantidade FROM produtos p JOIN estoque e ON p.id = e.produto_id WHERE p.id = ? AND e.tamanho = ?"
-    resultado = consultar(sql, (id_produto, tamanho))
+    resultado = consultar(sql, (id_produto, tamanho), conexao) # Passar a conexao
     if resultado:
         nome_produto, preco_produto, quantidade_estoque = resultado[0]
         return nome_produto, preco_produto, quantidade_estoque
     return None
 
-def verificar_estoque(produto_id, tamanho, quantidade_desejada):
+def verificar_estoque(produto_id, tamanho, quantidade_desejada, conexao=None): # Adicionar conexao como parametro
     sql = "SELECT quantidade FROM estoque WHERE produto_id = ? AND tamanho = ?"
-    resultado = consultar(sql, (produto_id, tamanho))
+    resultado = consultar(sql, (produto_id, tamanho), conexao) # Passar a conexao
     if resultado and resultado[0][0] >= quantidade_desejada:
         return True
     return False
@@ -27,16 +27,11 @@ def salvar_venda(usuario_id, carrinho):
     total = calcular_total(carrinho)
     data_hora_venda = datetime.now()
 
-    # Obter nome do cliente para o relatório
-    sql_cliente_nome = "SELECT nome FROM usuarios WHERE id = ?"
-    resultado_cliente = consultar(sql_cliente_nome, (usuario_id,))
-    cliente_nome = resultado_cliente[0][0] if resultado_cliente else "Desconhecido"
-
     sql_venda = '''
         INSERT INTO vendas (usuario_id, data, status, total)
         VALUES (?, ?, 'pendente', ?)
     '''
-
+    # 1. First, establish the main connection for this transaction
     cursor, conexao = executar_comando_com_retorno(sql_venda, (usuario_id, data_hora_venda.isoformat(), total))
     venda_id = cursor.lastrowid
 
@@ -45,6 +40,12 @@ def salvar_venda(usuario_id, carrinho):
         conexao.close()
         return None
 
+    # 2. Now that 'conexao' is defined, you can use it
+    # Obter nome do cliente para o relatório
+    sql_cliente_nome = "SELECT nome FROM usuarios WHERE id = ?"
+    resultado_cliente = consultar(sql_cliente_nome, (usuario_id,), conexao) # Passa a conexão
+    cliente_nome = resultado_cliente[0][0] if resultado_cliente else "Desconhecido"
+    
     produtos_para_relatorio = []
     try:
         for item in carrinho:
@@ -62,7 +63,7 @@ def salvar_venda(usuario_id, carrinho):
             
             # Adiciona item formatado para o relatório
             produtos_para_relatorio.append({
-                "nome": item["name"], # Assumindo que 'name' vem do carrinho do frontend
+                "nome": item["name"], 
                 "tamanho": item["tamanho"],
                 "quantidade": item["quantidade"],
                 "preco_unitario": item["preco_unitario"]

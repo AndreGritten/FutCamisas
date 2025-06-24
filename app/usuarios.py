@@ -1,6 +1,6 @@
 import sqlite3
 
-from .bancoDeDados.conexao import executar_comando, consultar, conectar
+from bancoDeDados.conexao import *
 
 
 def register_user(nome, email, senha, cpf, tipo='cliente'):

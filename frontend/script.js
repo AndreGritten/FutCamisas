@@ -849,8 +849,7 @@ document.getElementById('checkout-btn').addEventListener('click', async function
         }
     }
     catch (error) {
-        console.error("Erro na comunicação para finalizar compra:", error);
-        alert("Erro de conexão ao finalizar compra. Tente novamente.");
+        location.reload();
     }
     finally {
         setButtonLoading(finalizeButton, false, "Finalizar compra");
@@ -940,6 +939,7 @@ async function showProductDetailPage(productId) {
         addToCart(product, selectedSize, quantityToAdd);
         productDetailModal.style.display = 'none';
         document.getElementById('quantity').value = 1;
+        location.reload()
     };
 
     productDetailModal.style.display = 'flex';

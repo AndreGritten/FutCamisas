@@ -1,6 +1,6 @@
 import json
 import sqlite3
-from .bancoDeDados.conexao import executar_comando, consultar, executar_comando_com_retorno, conectar
+from bancoDeDados.conexao import *
 
 def adicionar_produto(nome, preco, tamanhos_dict):
     tamanhos_disponiveis_json = json.dumps(list(tamanhos_dict.keys()))

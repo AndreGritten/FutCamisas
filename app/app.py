@@ -4,17 +4,17 @@ import os
 import json
 import sqlite3
 from datetime import datetime
-from .bancoDeDados.conexao import conectar, executar_comando, consultar, executar_comando_com_retorno
-from .produtos import adicionar_produto, editar_produto, excluir_produto, obter_produto_por_id
-from .usuarios import register_user, login_user, edit_user, delete_user, list_users
-from .vendas import salvar_venda, buscar_vendas_usuario, buscar_itens_venda, listar_todas_vendas
-from .relatorios import ler_relatorios
+from bancoDeDados.conexao import *
+from produtos import *
+from usuarios import *
+from vendas import *
+from relatorios import *
 
 app = Flask(__name__)
 
 CORS(app)
 
-CAMINHO_BANCO = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'produtos.db')
+CAMINHO_BANCO = os.path.join(os.path.dirname(__file__), 'bancoDeDados', 'futCamisas.db')
 
 def criar_banco():
     conexao = None
@@ -335,7 +335,7 @@ def api_salvar_venda():
     if not isinstance(carrinho, list) or not carrinho:
         return jsonify({"message": "Carrinho deve ser uma lista não vazia de itens"}), 400
 
-    from .vendas import verificar_estoque
+    from vendas import verificar_estoque
     for item in carrinho:
         produto_id = item.get('produto_id')
         tamanho = item.get('tamanho')
@@ -347,7 +347,7 @@ def api_salvar_venda():
             return jsonify({"message": f"Estoque insuficiente para o produto {produto_id} (Tam: {tamanho})"}), 400
 
     try:
-        from .vendas import salvar_venda
+        from vendas import salvar_venda
         venda_id = salvar_venda(usuario_id, carrinho)
         if venda_id:
             return jsonify({"message": f"Venda {venda_id} criada com sucesso!"}), 201
@@ -358,7 +358,7 @@ def api_salvar_venda():
 
 @app.route('/api/vendas/usuario/<int:usuario_id>', methods=['GET'])
 def api_buscar_vendas_usuario(usuario_id):
-    from .vendas import buscar_vendas_usuario, buscar_itens_venda
+    from vendas import buscar_vendas_usuario, buscar_itens_venda
     vendas_usuario = buscar_vendas_usuario(usuario_id)
 
     vendas_formatadas = []
@@ -383,7 +383,7 @@ def api_buscar_vendas_usuario(usuario_id):
 
 @app.route('/api/vendas/todas', methods=['GET'])
 def api_listar_todas_vendas():
-    from .vendas import listar_todas_vendas, buscar_itens_venda
+    from vendas import listar_todas_vendas, buscar_itens_venda
     todas_vendas = listar_todas_vendas()
 
     vendas_formatadas = []
@@ -409,7 +409,7 @@ def api_listar_todas_vendas():
 
 @app.route('/api/relatorios/vendas', methods=['GET'])
 def api_get_relatorios_vendas():
-    from .relatorios import ler_relatorios
+    from relatorios import ler_relatorios
     relatorios = ler_relatorios()
     return jsonify(relatorios), 200
 

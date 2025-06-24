@@ -1,6 +1,6 @@
 import json
-from .produtos import listar_produtos
-from .bancoDeDados.conexao import executar_comando, consultar
+from produtos import *
+from bancoDeDados.conexao import *
 
 def adicionar_quantidade_produto():
     while True:
