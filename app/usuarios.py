@@ -142,7 +142,7 @@ def listar_usuarios_interativo():
         print(f"ID: {user[0]} - Nome: {user[1]} - CPF: {user[2]} - Email: {user[3]} - Tipo: {user[4]}")
 
 def editar_usuario_interativo():
-    listar_usuarios_interativos()
+    listar_usuarios_interativo()
     while True:
         id_ou_email = input("Insira o ID ou email do usuário que deseja editar: ").strip()
         if not id_ou_email:
@@ -193,7 +193,7 @@ def editar_usuario_interativo():
     print(mensagem)
 
 def deletar_usuario_interativo():
-    listar_usuarios_interativos()
+    listar_usuarios_interativo()
     id_ou_email = input("Insira o ID ou email do usuário que deseja excluir: ").strip()
     if not id_ou_email:
         print("Operação cancelada.")

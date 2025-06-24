@@ -1,16 +1,7 @@
-from .produtos import (
-    adicionar_produto_interativo, listar_produtos, editar_produto_interativo,
-    excluir_produto_interativo, filtrar_produtos_por_nome, filtrar_produtos_por_preco
-)
-from .usuarios import (
-    cadastrar_usuario_interativo, login_usuario_interativo, listar_usuarios_interativo,
-    editar_usuario_interativo, deletar_usuario_interativo
-)
-from .vendas import (
-    realizar_venda_interativo, buscar_historico_vendas_interativo, listar_vendas_interativo,
-    listar_compras_usuario_interativo
-)
-from .estoque import adicionar_quantidade_produto, check_product_in_stock
+from produtos import *
+from usuarios import *
+from vendas import *
+from estoque import *
 
 def main():
     while True:

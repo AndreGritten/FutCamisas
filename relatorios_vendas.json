@@ -1,0 +1,182 @@
+[
+    {
+        "id_venda": 1,
+        "cliente_nome": "Carlos Pereira",
+        "data_hora": "2025-06-24T00:54:04.463237",
+        "produtos": [
+            {
+                "nome": "Camisa Corinthians 2024",
+                "tamanho": "G",
+                "quantidade": 5,
+                "preco_unitario": 239.9
+            }
+        ],
+        "valor_total": 1199.5
+    },
+    {
+        "id_venda": 2,
+        "cliente_nome": "Djames",
+        "data_hora": "2025-06-24T00:57:50.722788",
+        "produtos": [
+            {
+                "nome": "Camisa Corinthians 2024",
+                "tamanho": "P",
+                "quantidade": 1,
+                "preco_unitario": 239.9
+            }
+        ],
+        "valor_total": 239.9
+    },
+    {
+        "id_venda": 3,
+        "cliente_nome": "Djames",
+        "data_hora": "2025-06-24T01:13:25.854948",
+        "produtos": [
+            {
+                "nome": "Camisa Palmeiras 2024",
+                "tamanho": "M",
+                "quantidade": 1,
+                "preco_unitario": 259.9
+            }
+        ],
+        "valor_total": 259.9
+    },
+    {
+        "id_venda": 4,
+        "cliente_nome": "Djames",
+        "data_hora": "2025-06-24T01:15:23.025892",
+        "produtos": [
+            {
+                "nome": "Camisa Palmeiras 2024",
+                "tamanho": "GG",
+                "quantidade": 1,
+                "preco_unitario": 259.9
+            }
+        ],
+        "valor_total": 259.9
+    },
+    {
+        "id_venda": 5,
+        "cliente_nome": "Djames",
+        "data_hora": "2025-06-24T01:18:22.887007",
+        "produtos": [
+            {
+                "nome": "Camisa Palmeiras 2024",
+                "tamanho": "P",
+                "quantidade": 1,
+                "preco_unitario": 259.9
+            }
+        ],
+        "valor_total": 259.9
+    },
+    {
+        "id_venda": 6,
+        "cliente_nome": "Djames",
+        "data_hora": "2025-06-24T01:22:31.177184",
+        "produtos": [
+            {
+                "nome": "Camisa Palmeiras 2024",
+                "tamanho": "M",
+                "quantidade": 1,
+                "preco_unitario": 259.9
+            }
+        ],
+        "valor_total": 259.9
+    },
+    {
+        "id_venda": 7,
+        "cliente_nome": "Carlos Pereira",
+        "data_hora": "2025-06-24T01:31:39.505359",
+        "produtos": [
+            {
+                "nome": "Camisa Palmeiras 2024",
+                "tamanho": "GG",
+                "quantidade": 2,
+                "preco_unitario": 259.9
+            }
+        ],
+        "valor_total": 519.8
+    },
+    {
+        "id_venda": 8,
+        "cliente_nome": "Carlos Pereira",
+        "data_hora": "2025-06-24T01:32:42.476896",
+        "produtos": [
+            {
+                "nome": "Camisa Corinthians 2024",
+                "tamanho": "M",
+                "quantidade": 1,
+                "preco_unitario": 239.9
+            }
+        ],
+        "valor_total": 239.9
+    },
+    {
+        "id_venda": 9,
+        "cliente_nome": "Carlos Pereira",
+        "data_hora": "2025-06-24T01:33:54.747666",
+        "produtos": [
+            {
+                "nome": "Camisa Flamengo 2024",
+                "tamanho": "G",
+                "quantidade": 1,
+                "preco_unitario": 249.9
+            }
+        ],
+        "valor_total": 249.9
+    },
+    {
+        "id_venda": 10,
+        "cliente_nome": "Carlos Pereira",
+        "data_hora": "2025-06-24T01:35:38.802863",
+        "produtos": [
+            {
+                "nome": "Camisa Palmeiras 2024",
+                "tamanho": "P",
+                "quantidade": 1,
+                "preco_unitario": 259.9
+            }
+        ],
+        "valor_total": 259.9
+    },
+    {
+        "id_venda": 11,
+        "cliente_nome": "Carlos Pereira",
+        "data_hora": "2025-06-24T01:42:48.932490",
+        "produtos": [
+            {
+                "nome": "Camisa Corinthians 2024",
+                "tamanho": "GG",
+                "quantidade": 1,
+                "preco_unitario": 239.9
+            }
+        ],
+        "valor_total": 239.9
+    },
+    {
+        "id_venda": 12,
+        "cliente_nome": "Carlos Pereira",
+        "data_hora": "2025-06-24T01:49:02.709606",
+        "produtos": [
+            {
+                "nome": "Camisa Grêmio 2024",
+                "tamanho": "G",
+                "quantidade": 1,
+                "preco_unitario": 259.9
+            },
+            {
+                "nome": "Camisa Palmeiras 2024",
+                "tamanho": "GG",
+                "quantidade": 1,
+                "preco_unitario": 259.9
+            },
+            {
+                "nome": "Camisa Corinthians 2024",
+                "tamanho": "P",
+                "quantidade": 1,
+                "preco_unitario": 239.9
+            }
+        ],
+        "valor_total": 759.6999999999999
+    }
+]

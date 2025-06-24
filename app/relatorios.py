@@ -2,7 +2,6 @@ import json
 from datetime import datetime
 import os
 
-# Caminho para o arquivo de relatórios (no mesmo nível do diretório 'produtos.db')
 CAMINHO_RELATORIOS = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'relatorios_vendas.json')
 
 def registrar_venda_em_arquivo(venda_id, cliente_nome, data_hora_venda, produtos_vendidos, valor_total):
